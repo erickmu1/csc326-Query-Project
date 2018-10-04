@@ -49,9 +49,10 @@ class crawler(object):
         and with the file containing the list of seed URLs to begin indexing."""
         self._url_queue = []
         self._doc_id_cache = {}
-        self._word_id_cache = {}    # maps: word --> word_id (stores lexicon as keys)
-        self._doc_idx_cache = {}    # maps: doc_id --> doc_idx
-        self._inv_idx_cache = {}    # maps: word_id --> doc_id(s)
+        self._word_id_cache = {}  # maps: word --> word_id (stores lexicon as keys)
+        self._doc_idx_cache = {}  # maps: doc_id --> doc_idx
+        self._inv_idx_cache = {}  # maps: word_id --> doc_id(s)
+        self._res_inv_idx_cache = {}  # maps: word --> url(s)
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -249,6 +250,12 @@ class crawler(object):
             else:
                 self._inv_idx_cache[word_id] = {self._curr_doc_id}
 
+            # Populate resolved inverted index cache
+            if word in self._res_inv_idx_cache:
+                self._res_inv_idx_cache[word].add(self._curr_url)
+            else:
+                self._res_inv_idx_cache[word] = {self._curr_url}
+
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
         if isinstance(elem, Tag):
@@ -338,7 +345,7 @@ class crawler(object):
                 self._font_size = 0
                 self._curr_words = []
                 self._index_document(soup)
-                self._add_words_to_document()   # updates structure that maps: doc_id --> doc_idx
+                self._add_words_to_document()  # updates dict() that maps: doc_id --> doc_idx
                 print "    url=" + repr(self._curr_url)
 
             except Exception as e:
@@ -348,8 +355,17 @@ class crawler(object):
                 if socket:
                     socket.close()
 
+    # Returns a dict() that maps: word_id --> doc_id(s)
+    def get_inverted_index(self):
+        """Return all doc_id(s) pertaining to any word_id"""
+        return self._inv_idx_cache
+
+    # Returns s dict() that maps: word --> url(s)
+    def get_resolved_inverted_index(self):
+        """Return all urls matching a specific word"""
+        return self._res_inv_idx_cache
+
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=0)
-
