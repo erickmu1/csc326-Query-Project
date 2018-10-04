@@ -49,7 +49,10 @@ class crawler(object):
         and with the file containing the list of seed URLs to begin indexing."""
         self._url_queue = []
         self._doc_id_cache = {}
-        self._word_id_cache = {}
+        self._word_id_cache = {}  # maps: word --> word_id (stores lexicon as keys)
+        self._doc_idx_cache = {}  # maps: doc_id --> doc_idx
+        self._inv_idx_cache = {}  # maps: word_id --> doc_id(s)
+        self._res_inv_idx_cache = {}  # maps: word --> url(s)
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -215,6 +218,9 @@ class crawler(object):
         #       database for this document
         print "    num words=" + str(len(self._curr_words))
 
+        # Add information (doc_idx) pertaining to current document indexed by doc_id
+        self._doc_idx_cache[self._curr_doc_id] = self._curr_words
+
     def _increase_font_factor(self, factor):
         """Increade/decrease the current font size."""
 
@@ -236,6 +242,19 @@ class crawler(object):
             if word in self._ignored_words:
                 continue
             self._curr_words.append((self.word_id(word), self._font_size))
+
+            # Populate inverted index cache
+            word_id = self.word_id(word)
+            if word_id in self._inv_idx_cache:
+                self._inv_idx_cache[word_id].add(self._curr_doc_id)
+            else:
+                self._inv_idx_cache[word_id] = {self._curr_doc_id}
+
+            # Populate resolved inverted index cache
+            if word in self._res_inv_idx_cache:
+                self._res_inv_idx_cache[word].add(self._curr_url)
+            else:
+                self._res_inv_idx_cache[word] = {self._curr_url}
 
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
@@ -295,7 +314,7 @@ class crawler(object):
             else:
                 self._add_text(tag)
 
-    def crawl(self, depth=2, timeout=3):
+    def crawl(self, depth=2, timeout=3):  # was set depth = 2
         """Crawl the web!"""
         seen = set()
 
@@ -326,7 +345,7 @@ class crawler(object):
                 self._font_size = 0
                 self._curr_words = []
                 self._index_document(soup)
-                self._add_words_to_document()
+                self._add_words_to_document()  # updates dict() that maps: doc_id --> doc_idx
                 print "    url=" + repr(self._curr_url)
 
             except Exception as e:
@@ -336,7 +355,17 @@ class crawler(object):
                 if socket:
                     socket.close()
 
+    # Returns a dict() that maps: word_id --> doc_id(s)
+    def get_inverted_index(self):
+        """Return all doc_id(s) pertaining to any word_id"""
+        return self._inv_idx_cache
+
+    # Returns s dict() that maps: word --> url(s)
+    def get_resolved_inverted_index(self):
+        """Return all urls matching a specific word"""
+        return self._res_inv_idx_cache
+
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
-    bot.crawl(depth=1)
+    bot.crawl(depth=0)
