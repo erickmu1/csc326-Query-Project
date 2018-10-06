@@ -1,11 +1,15 @@
 <table id=”results”>
 
     <tr>
-        <td>the</td>
-        <td>2</td>
+        <td><b>Word</b></td>
+        <td><b>Count</b></td>    
     </tr>
-    <tr>
-        <td>lab</td>
-        <td>3</td>
-    </tr>
+
+    % for keyword in keywords_list:
+        <tr>
+            <td>{{keyword}}</td>
+            <td>{{keywords_list[keyword]}}</td>
+        <tr>
+    %end
+
 </table>
