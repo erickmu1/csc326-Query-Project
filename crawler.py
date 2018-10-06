@@ -48,11 +48,11 @@ class crawler(object):
         """Initialize the crawler with a connection to the database to populate
         and with the file containing the list of seed URLs to begin indexing."""
         self._url_queue = []
-        self._doc_id_cache = {}
-        self._word_id_cache = {}  # maps: word --> word_id (stores lexicon as keys)
-        self._doc_idx_cache = {}  # maps: doc_id --> doc_idx
-        self._inv_idx_cache = {}  # maps: word_id --> doc_id(s)
-        self._res_inv_idx_cache = {}  # maps: word --> url(s)
+        self._doc_id_cache = {}         # maps: url --> doc_id
+        self._word_id_cache = {}        # maps: word --> word_id (stores lexicon as keys)
+        self._doc_idx_cache = {}        # maps: doc_id --> doc_idx
+        self._inv_idx_cache = {}        # maps: word_id --> doc_id(s)
+        self._res_inv_idx_cache = {}    # maps: word --> url(s)
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -220,6 +220,7 @@ class crawler(object):
 
         # Add information (doc_idx) pertaining to current document indexed by doc_id
         self._doc_idx_cache[self._curr_doc_id] = self._curr_words
+        # TODO: add Title and Description to doc_idx
 
     def _increase_font_factor(self, factor):
         """Increade/decrease the current font size."""
