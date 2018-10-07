@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+	    <link rel="stylesheet" href="/style.css">
         <title>Page Title</title>
     </head>
     <body>
 
-        <form action="/" method="post">
-            <input name="keywords" type="text" />
-            <input value="Count" type="submit" />
-        </form> 
 
         <table id=”results”>
+            <h1></h1>
+            %if user_input != None:
+                <p>Search for "{{user_input}}"</p>
+            %end
 
             <tr>
                 <td><b>Word</b></td>
@@ -25,6 +27,11 @@
             %end
 
         </table>
+
+        <form action="/" method="post">
+            <input name="keywords" type="text" />
+            <input value="Count" type="submit" />
+        </form> 
 
         <table id="history">
 
