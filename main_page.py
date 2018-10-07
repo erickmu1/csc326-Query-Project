@@ -1,12 +1,15 @@
 from bottle import run, route, request, template, response, static_file
 from collections import Counter
 
+
+#refreshing saves the last input into the array
+
 #hold entire list of words that have been searched
 total_list = Counter()
 
 @route('/') 
 def keywords():
-    return template('website_template', user_input=None, keywords_list=[], popular_list=[])
+    return template('website_template', user_input=None, keywords_list=[], popular_list=[], start_site=True)
 
 @route('/', method='POST')
 def display_keywords():
@@ -22,7 +25,7 @@ def display_keywords():
     keywords_input = " ".join(keywords_input_raw.split()).lower()
 
     if keywords_input == "":
-        user_input = "Sorry, that is not a valid input"
+        user_input = None
         keywords_list =[]
 
     else:
@@ -40,7 +43,7 @@ def display_keywords():
     #take the top 20 most popular words
     popular_list = total_list.most_common(num_words)
     
-    return template('website_template', user_input=user_input, keywords_list=keywords_list, popular_list=popular_list)
+    return template('website_template', user_input=user_input, keywords_list=keywords_list, popular_list=popular_list, start_site=False)
 
 # Static CSS Files
 @route('/static/<filename:re:.*\.css>')

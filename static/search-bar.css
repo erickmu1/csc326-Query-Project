@@ -1,0 +1,28 @@
+div.search_bar {
+    height:8%;
+    width: 50%;
+    margin:auto;
+}
+
+form{
+    width: 50%;
+    margin:auto;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+input {
+    border: 1px dotted #999;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.search_input{
+    width: 20em;
+}
+
+.search_button{
+}
