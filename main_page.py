@@ -37,7 +37,7 @@ def display_keywords():
         #can add counter objects together 
         total_list += keywords_list
 
-        #take the top 20 most popular words
+    #take the top 20 most popular words
     popular_list = total_list.most_common(num_words)
     
     return template('website_template', user_input=user_input, keywords_list=keywords_list, popular_list=popular_list)

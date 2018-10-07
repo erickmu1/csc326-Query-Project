@@ -7,8 +7,6 @@
     <body>
         <div class="table_format">
             <table id=”results”>
-
-
                 <tr>
                     <td><b>Word</b></td>
                     <td><b>Count</b></td>    
@@ -23,14 +21,16 @@
 
             </table>
             <div id = "search_bar">
-                %if user_input != None:
-                <p>Search for "{{user_input}}"</p>
-                %end
-
+       
                 <form action="/" method="post">
                     <input name="keywords" type="text" />
                     <input value="Count" type="submit" />
                 </form> 
+                
+                %if user_input != None:
+                <p>Search for "{{user_input}}"</p>
+                %end
+
             </div>
             <table id="history">
 
