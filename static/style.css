@@ -1,0 +1,38 @@
+div.table_format{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+    justify-content: space-evenly;
+    
+    text-align: center;
+}
+
+tr {
+    font-family: Rockwell, sans-serif;
+	font-size: 1.3em;
+}
+
+td{
+    font-family: Rockwell, sans-serif;
+	font-size: 1em;
+}
+
+div.search_bar {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-evenly
+}
+
+input {
+    border: 1px dotted #999;
+    width: auto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+input.keywords {
+    width: 50%;
+}

@@ -1,4 +1,4 @@
-from bottle import run, route, request, template, response
+from bottle import run, route, request, template, response, static_file
 from collections import Counter
 
 #hold entire list of words that have been searched
@@ -24,6 +24,7 @@ def display_keywords():
     if keywords_input == "":
         user_input = "Sorry, that is not a valid input"
         keywords_list =[]
+
     else:
         user_input = keywords_input_raw
 
@@ -41,6 +42,10 @@ def display_keywords():
     
     return template('website_template', user_input=user_input, keywords_list=keywords_list, popular_list=popular_list)
 
+# Static CSS Files
+@route('/static/<filename:re:.*\.css>')
+def send_css(filename):
+    return static_file(filename, root='static')
 
 run(host='localhost', port=8080, debug = True)
 
