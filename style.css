@@ -1,0 +1,17 @@
+div.results{
+    font-family: Rockwell, sans-serif;
+    font-size: 4em;
+    color: red;
+}
+
+table {
+    font-family: Rockwell, sans-serif;
+	font-size: 4em;
+}
+
+input {
+    border: 1px dotted #999;
+    width : 150px;
+    margin: 0;
+    box-sizing: border-box;
+}
