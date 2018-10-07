@@ -17,7 +17,7 @@
                 <td><b>Count</b></td>    
             </tr>
 
-            % for keyword in keywords_list:
+            %for keyword in keywords_list:
                 <tr>
                     <td>{{keyword}}</td>
                     <td>{{keywords_list[keyword]}}</td>
@@ -33,7 +33,7 @@
                 <td><b>Count</b></td>    
             </tr>
 
-            % for popular in popular_list:
+            %for popular in popular_list:
                 <tr>
                     <td>{{popular[0]}}</td>
                     <td>{{popular[1]}}</td>
