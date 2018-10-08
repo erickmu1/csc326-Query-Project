@@ -90,7 +90,7 @@ def verify_inverted_index(obj):
     #   invalid_urls.txt
 
 # Set file containing URLs - CHANGE ME!
-url_files = "invalid_urls.txt"
+url_files = "urls/urls.txt"
 
 # Crawl the provided URLs
 bot = crawler(None, url_files)
