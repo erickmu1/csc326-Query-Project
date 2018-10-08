@@ -1,6 +1,7 @@
 from bottle import run, route, request, template, response, static_file
 from collections import Counter
 
+#Python version: 3.5.6
 # To run: type in 'python main_page.py'
 
 #hold entire list of words that have been searched

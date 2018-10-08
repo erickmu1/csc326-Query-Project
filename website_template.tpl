@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Retrieving CSS files -->
         <link rel="stylesheet" href="/static/style.css">
         <link rel="stylesheet" href="/static/search-bar.css">
         <link rel="stylesheet" href="/static/table.css">
         <title>Ace Search Systems</title>
     </head>
     <body>
-        <header>
 
+        <!-- Leave empty for now -->
+        <header>
+            
         </header>
 
+        <!-- Brand name and logo -->
         <section class = "search_brand">
                 <p class = "brand_name"> Ace Search Systems </p>
                 <img class = "logo" src = "images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
         </section>
 
-
+        <!-- Search bar -->
         <div class = "search_bar">
        
             <form action="/" method="post">
@@ -26,6 +30,8 @@
 
         </div>
 
+
+        <!-- Display what user inputted -->
         <section class = "user_input">
             %if user_input == None and start_site == False: 
                 <p class = "user_input">Sorry, that is not a valid search.</p>
@@ -37,6 +43,7 @@
 
         </section>
 
+        <!-- Table of results and result history -->
         <div class="table_format">
             <table id="results" class = "results_format">
                 <tr class = "table_header">
