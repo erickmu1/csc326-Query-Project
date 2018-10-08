@@ -1,20 +1,56 @@
 html, body{
-    height: 100%;
+    height: 90%;
     padding:0; 
     margin:0;
     background: #1e3799;
 }
 
-section.user_input{
-    height: 3em;
-    margin: auto;
+header{
+    margin-top: 5%;
+}
 
-    margin-top: 10%;
-    padding:0; 
+
+section.search_brand{
+    font-family: Rockwell, sans-serif;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+    margin: auto;
+    padding: 0px 10px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+p.brand_name{
+    margin: 10px;
+}
+
+img.logo{
+    max-width: 60px;
+    max-height: 100px;
+    width: auto;
+    height: auto;
+
+    display: block;
+
+    margin: 10px;
+
+    background-color: #1e3799;
+
+}
+
+section.user_input{
+    height: 8%;
+    margin: 1em auto;
+
+    padding:5px; 
 
     width: 70%;
     overflow: auto;
-
 
 }
 
@@ -29,40 +65,3 @@ p.user_input{
 
 }
 
-
-div.table_format{
-    font-family: Rockwell, sans-serif;
-    color: white;
-    height: 70%;
-    width: auto ;
-
-    
-    margin: auto;
-    
-
-	display: flex;
-	flex-direction: row;
-	/* align-items: center; */
-    justify-content: space-evenly;
-    
-    text-align: center;
-    padding: 15px;
-    padding-top: 0;
-
-    overflow:auto;
-
-}
-
-.results_format{
-
-
-    border-spacing: 30px 2px;
-}
-
-tr.table_header {
-    font-size: 1.3em;
-}
-
-tr.table_results{
-	font-size: 1em;
-}

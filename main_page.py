@@ -50,5 +50,9 @@ def display_keywords():
 def send_css(filename):
     return static_file(filename, root='static')
 
+@route ('/images/<filename:re:.*\.jpg>')
+def send_img(filename):
+    return static_file(filename, root="images")
+
 run(host='localhost', port=8080, debug = True)
 

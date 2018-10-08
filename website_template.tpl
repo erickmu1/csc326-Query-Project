@@ -3,9 +3,29 @@
     <head>
         <link rel="stylesheet" href="/static/style.css">
         <link rel="stylesheet" href="/static/search-bar.css">
-        <title>Ace Search System</title>
+        <link rel="stylesheet" href="/static/table.css">
+        <title>Ace Search Systems</title>
     </head>
     <body>
+        <header>
+
+        </header>
+
+        <section class = "search_brand">
+                <p class = "brand_name"> Ace Search Systems </p>
+                <img class = "logo" src = "images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
+        </section>
+
+
+        <div class = "search_bar">
+       
+            <form action="/" method="post">
+                <input class = "search_input" name="keywords" type="text" placeholder="Type to search"/>
+                <input class = "search_button" value="Count" type="submit" />
+            </form> 
+
+        </div>
+
         <section class = "user_input">
             %if user_input == None and start_site == False: 
                 <p class = "user_input">Sorry, that is not a valid search.</p>
@@ -13,19 +33,9 @@
             %elif user_input != None:
                 <p class = "user_input">Searched for: "{{user_input}}"</p>
 
-
             %end
 
         </section>
-
-        <div class = "search_bar">
-       
-                <form action="/" method="post">
-                    <input class = "search_input" name="keywords" type="text" placeholder="Type to search"/>
-                    <input class = "search_button" value="Count" type="submit" />
-                </form> 
-
-        </div>
 
         <div class="table_format">
             <table id="results" class = "results_format">
