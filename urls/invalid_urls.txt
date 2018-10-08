@@ -1,0 +1,6 @@
+not_a_url
+Here is a random statement
+https://www.a.com/
+https://www.google.ca/
+http://www.a.com/
+alsonotaurl
