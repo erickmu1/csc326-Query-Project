@@ -7,6 +7,9 @@ from collections import Counter
 #hold entire list of words that have been searched
 total_list = Counter()
 
+#holds list of words user inputted last
+prev_list = Counter()
+
 @route('/') 
 def keywords():
     return template('website_template', user_input=None, keywords_list=[], popular_list=[], start_site=True)
@@ -15,6 +18,7 @@ def keywords():
 def display_keywords():
 
     global total_list
+    global prev_list
     num_words = 20
 
     keywords_input_raw = request.forms.get('keywords')
@@ -26,7 +30,7 @@ def display_keywords():
     #error checking for no user input
     if keywords_input == "":
         user_input = None
-        keywords_list =[]
+        keywords_list =prev_list
 
     else:
         user_input = keywords_input_raw
@@ -36,6 +40,7 @@ def display_keywords():
 
         #recording number of occurrences for each word 
         keywords_list = Counter (keywords_original_list)
+        prev_list = keywords_list
 
         total_list += keywords_list
 
