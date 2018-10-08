@@ -1,8 +1,7 @@
 from bottle import run, route, request, template, response, static_file
 from collections import Counter
 
-
-#refreshing saves the last input into the array
+# To run: type in 'python main_page.py'
 
 #hold entire list of words that have been searched
 total_list = Counter()
@@ -17,13 +16,13 @@ def display_keywords():
     global total_list
     num_words = 20
 
-    #get user input
     keywords_input_raw = request.forms.get('keywords')
 
     #lower() makes it turn into lowercase
     #removed leading, ending and duplicate spaces
     keywords_input = " ".join(keywords_input_raw.split()).lower()
 
+    #error checking for no user input
     if keywords_input == "":
         user_input = None
         keywords_list =[]
@@ -37,7 +36,6 @@ def display_keywords():
         #recording number of occurrences for each word 
         keywords_list = Counter (keywords_original_list)
 
-        #can add counter objects together 
         total_list += keywords_list
 
     #take the top 20 most popular words
@@ -50,6 +48,7 @@ def display_keywords():
 def send_css(filename):
     return static_file(filename, root='static')
 
+# Static jpg files
 @route ('/images/<filename:re:.*\.jpg>')
 def send_img(filename):
     return static_file(filename, root="images")

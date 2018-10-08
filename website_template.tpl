@@ -21,7 +21,7 @@
        
             <form action="/" method="post">
                 <input class = "search_input" name="keywords" type="text" placeholder="Type to search"/>
-                <input class = "search_button" value="Count" type="submit" />
+                <input class = "search_button" value="Go!" type="submit" />
             </form> 
 
         </div>
