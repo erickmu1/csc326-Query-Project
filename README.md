@@ -1,5 +1,6 @@
 # csc326-Query-Project
 CSC326 lab
+Python 2.7
 
 LAB 1
 - to run the website: run "main_page.py" and go to "http://localhost:8080/"
