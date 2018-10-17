@@ -43,14 +43,14 @@ def verify_doc_idx(obj, url_file):
         else:
             continue
 
-        print obj._fix_url(url.strip(), ""), "has",
+        print (obj._fix_url(url.strip(), ""), "has",)
 
         if obj._doc_id_cache[obj._fix_url(url.strip(), "")] in obj._doc_idx_cache:
             # Valid URL
-            print len(obj._doc_idx_cache[obj._doc_id_cache[obj._fix_url(url.strip(), "")]]), "words on its page"
+            print (len((obj._doc_idx_cache[obj._doc_id_cache[obj._fix_url(url.strip(), "")]]), "words on its page"))
         else:
             # URL has no doc_idx associated to it - means the URL is invalid or not parsed
-            print "nothing on its page"
+            print ("nothing on its page")
             non_empty_urls = False
 
     return non_empty_urls
@@ -68,7 +68,7 @@ def verify_inverted_index(obj):
         if obj._word_id_cache[keyword] not in inv_idx:
             # Check that every word in resolved_inverted_index has its word_id
             # in inverted_index
-            print "There is a word without a word_id!"
+            print ("There is a word without a word_id!")
             return False
 
         else:
@@ -76,7 +76,7 @@ def verify_inverted_index(obj):
                 # Check that every URL in resolved_inverted_index has its doc_id
                 # in inverted_index
                 if obj._doc_id_cache[url] not in inv_idx[obj._word_id_cache[keyword]]:
-                    print "There is a URL without a doc_id OR mapped to the wrong keyword!"
+                    print ("There is a URL without a doc_id OR mapped to the wrong keyword!")
                     return False
 
     return True
@@ -97,26 +97,26 @@ bot = crawler(None, url_files)
 bot.crawl(depth=0)
 
 # Run Test Cases!
-print "\nTESTING the CRAWLER for", url_files, "\n"
+print ("\nTESTING the CRAWLER for", url_files, "\n")
 
 # Check that our lexicon is valid
 if not verify_lexicon(bot):
-    print "\nThere is a word not associated to any document!\n"
+    print ("\nThere is a word not associated to any document!\n")
 else:
-    print "\nAll words in lexicon are associated to at least one document!\n"
+    print ("\nAll words in lexicon are associated to at least one document!\n")
 
 # NOTE. invalid urls must be empty
 # NOTE. if a url has no doc_idx, then it cannot be found since no words are associated to it
 if not verify_doc_idx(bot, url_files):
-    print "\nThere is a URL that is empty!\n"
+    print ("\nThere is a URL that is empty!\n")
 else:
-    print "\nAll URLs have words associated to them!\n"
+    print ("\nAll URLs have words associated to them!\n")
 
 # Check our inverted_index and resolved_inverted_index match
 if not verify_inverted_index(bot):
-    print "\ninverted_index and resolved_index don't match!\n"
+    print ("\ninverted_index and resolved_index don't match!\n")
 else:
-    print "\ninverted_index and resolved_index are the same!\n"
+    print ("\ninverted_index and resolved_index are the same!\n")
 
 # OBSERVATIONS.
 #   http and https are considered different URLs despite mapping to the same website

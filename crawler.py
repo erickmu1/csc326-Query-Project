@@ -18,9 +18,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import urllib2
-import urlparse
-from BeautifulSoup import *
+# import urllib2
+# import urlparse
+# from BeautifulSoup import *
+
+import urllib.request as urllib2
+import urllib.parse as urlparse
+from bs4 import BeautifulSoup, Tag
 from collections import defaultdict
 import re
 
@@ -189,7 +193,7 @@ class crawler(object):
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
-        print "document title=" + repr(title_text)
+        print ("document title=" + repr(title_text))
 
         # TODO update document title for document id self._curr_doc_id
 
@@ -216,7 +220,7 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
-        print "    num words=" + str(len(self._curr_words))
+        print ("    num words=" + str(len(self._curr_words)))
 
         # Add information (doc_idx) pertaining to current document indexed by doc_id
         self._doc_idx_cache[self._curr_doc_id] = self._curr_words
@@ -338,7 +342,7 @@ class crawler(object):
             socket = None
             try:
                 socket = urllib2.urlopen(url, timeout=timeout)
-                soup = BeautifulSoup(socket.read())
+                soup = BeautifulSoup(socket.read(), features='html.parser')
 
                 self._curr_depth = depth_ + 1
                 self._curr_url = url
@@ -347,10 +351,10 @@ class crawler(object):
                 self._curr_words = []
                 self._index_document(soup)
                 self._add_words_to_document()  # updates dict() that maps: doc_id --> doc_idx
-                print "    url=" + repr(self._curr_url)
+                print ("    url=" + repr(self._curr_url))
 
             except Exception as e:
-                print e
+                print (e)
                 pass
             finally:
                 if socket:
@@ -368,5 +372,5 @@ class crawler(object):
 
 
 if __name__ == "__main__":
-    bot = crawler(None, "urls.txt")
+    bot = crawler(None, "urls/urls.txt")
     bot.crawl(depth=0)
