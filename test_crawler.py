@@ -47,7 +47,7 @@ def verify_doc_idx(obj, url_file):
 
         if obj._doc_id_cache[obj._fix_url(url.strip(), "")] in obj._doc_idx_cache:
             # Valid URL
-            print (len((obj._doc_idx_cache[obj._doc_id_cache[obj._fix_url(url.strip(), "")]]), "words on its page"))
+            print (len((obj._doc_idx_cache[obj._doc_id_cache[obj._fix_url(url.strip(), "")]])), "words on its page")
         else:
             # URL has no doc_idx associated to it - means the URL is invalid or not parsed
             print ("nothing on its page")
