@@ -11,7 +11,10 @@
 
         <!-- Leave empty for now -->
         <header>
-            
+            <!-- Sign In Button -->
+                <form action="/" method="post">
+                    <input type="submit" name="SignIn" value="Sign In"/>
+                </form>
         </header>
 
         <!-- Brand name and logo -->
