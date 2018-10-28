@@ -1,6 +1,6 @@
 # csc326-Query-Project
 CSC326 lab
-Python 2.7
+Python 3
 
 LAB 1
 - to run the website: run "main_page.py" and go to "http://localhost:8080/"
@@ -8,6 +8,7 @@ LAB 1
 - test cases for the crawler can be found in the urls folder
 
 LAB 2
+<<<<<<< HEAD
 - public IP address: 52.44.172.143
 - benchmark setup: 
     - have apache installed
@@ -16,3 +17,6 @@ LAB 2
 
 
     
+=======
+- Enabled Google APIs: NONE
+>>>>>>> eb65fd47899fac1d0c885a737b71e1d12697c226
