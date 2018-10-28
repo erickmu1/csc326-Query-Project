@@ -1,18 +1,17 @@
 import boto3
 ec2 = boto3.resource('ec2')
 
+#code to create a new key pair
 # outfile = open('ec2-keypair.pem','w')
 # key = ec2.create_key_pair(KeyName = 'aws-keypair')
 
 # KeyPairOut = str(key.key_material)
-# print(KeyPairOut)
 # outfile.write(KeyPairOut)
 
-# create a new EC2 instance
 
-
+# create an instance with security group 'csc326-group39'
 instances = ec2.create_instances(
-     ImageId='ami-0922553b7b0369273',
+     ImageId='ami-0ac019f4fcb7cb7e6',
      MinCount=1,
      MaxCount=2,
      InstanceType='t2.micro',
