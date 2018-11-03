@@ -27,6 +27,8 @@ import urllib.parse as urlparse
 from bs4 import BeautifulSoup, Tag
 from collections import defaultdict
 import re
+from pagerank import page_rank
+import sqlite3
 
 
 def attr(elem, attr):
@@ -57,6 +59,20 @@ class crawler(object):
         self._doc_idx_cache = {}        # maps: doc_id --> doc_idx
         self._inv_idx_cache = {}        # maps: word_id --> doc_id(s)
         self._res_inv_idx_cache = {}    # maps: word --> url(s)
+        self.links = []
+        self._db_conn = db_conn
+
+        # Database Initialization (Persistent storage)
+        if db_conn is not None:
+            crsr = db_conn.cursor()
+
+        crsr.execute("CREATE TABLE lexicon (word_id INTEGER, word TEXT)")
+        crsr.execute("CREATE TABLE document_idx (doc_id INTEGER, word_id INTEGER)")
+        crsr.execute("CREATE TABLE inverted_idx (word_id INTEGER, doc_id INTEGER)")
+        crsr.execute("CREATE TABLE page_rank (doc_id INTEGER, rank_score REAL)")
+
+        # Save changes to db
+        db_conn.commit()
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -141,6 +157,12 @@ class crawler(object):
     def _mock_insert_word(self, word):
         """A function that pretends to inster a word into the lexicon db table
         and then returns that newly inserted word's id."""
+
+        # Insert word to lexicon db table
+        lex_pair = (self._mock_next_word_id, word)
+        self._db_conn.cursor().execute("INSERT INTO lexicon VALUES (?, ?)", lex_pair)
+
+        # Update current word_id
         ret_id = self._mock_next_word_id
         self._mock_next_word_id += 1
         return ret_id
@@ -188,7 +210,9 @@ class crawler(object):
     def add_link(self, from_doc_id, to_doc_id):
         """Add a link into the database, or increase the number of links between
         two pages in the database."""
-        # TODO
+
+        if (from_doc_id, to_doc_id) not in self.links:
+            self.links.append((from_doc_id, to_doc_id))
 
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
@@ -224,6 +248,13 @@ class crawler(object):
 
         # Add information (doc_idx) pertaining to current document indexed by doc_id
         self._doc_idx_cache[self._curr_doc_id] = self._curr_words
+
+        # Add word_ids (doc_idx) to document_idx db table
+        doc_idx = []
+        for word_font_pair in self._curr_words:
+            doc_idx.append((self._curr_doc_id, word_font_pair[0]))
+        self._db_conn.cursor().executemany("INSERT INTO document_idx VALUES(?, ?)", doc_idx)
+
         # TODO: add Title and Description to doc_idx
 
     def _increase_font_factor(self, factor):
@@ -260,6 +291,10 @@ class crawler(object):
                 self._res_inv_idx_cache[word].add(self._curr_url)
             else:
                 self._res_inv_idx_cache[word] = {self._curr_url}
+
+            # Add mapping to inverted_idx db table
+            inv_idx = (word_id, self._curr_doc_id)
+            self._db_conn.cursor().execute("INSERT INTO inverted_idx VALUES (?, ?)", inv_idx)
 
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
@@ -360,6 +395,17 @@ class crawler(object):
                 if socket:
                     socket.close()
 
+        # Calculate pagerank
+        pagerank = page_rank(self.links)
+
+        # Add page_rank scores to db
+        for doc_id in pagerank:
+            rank = (doc_id, pagerank[doc_id])
+            self._db_conn.cursor().execute("INSERT INTO page_rank VALUES (?, ?)", rank)
+
+        # Save changes to database
+        self._db_conn.commit()
+
     # Returns a dict() that maps: word_id --> doc_id(s)
     def get_inverted_index(self):
         """Return all doc_id(s) pertaining to any word_id"""
@@ -372,5 +418,31 @@ class crawler(object):
 
 
 if __name__ == "__main__":
-    bot = crawler(None, "urls/urls.txt")
+
+    # Initialize database
+    db_conn = sqlite3.connect("dbFile.db")
+
+    # Populate the database
+    bot = crawler(db_conn, "urls/duplicate_urls.txt")
     bot.crawl(depth=0)
+
+    # print ("\nLEXICON")
+    # for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
+    #     print(row)
+    # print("\nDOC IDX")
+    # for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
+    #     print(row)
+    # print("\nINV IDX")
+    # for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
+    #     print(row)
+    # print("\nPAGE RANK")
+    # for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
+    #     print(row)
+
+    # print("\ndeleteing tables")
+    db_conn.cursor().execute("DROP TABLE lexicon")
+    db_conn.cursor().execute("DROP TABLE document_idx")
+    db_conn.cursor().execute("DROP TABLE inverted_idx")
+    db_conn.cursor().execute("DROP TABLE page_rank")
+
+    db_conn.commit()
