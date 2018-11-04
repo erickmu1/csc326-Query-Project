@@ -8,15 +8,18 @@ LAB 1
 - test cases for the crawler can be found in the urls folder
 
 LAB 2
-<<<<<<< HEAD
 - public IP address: 52.44.172.143
 - benchmark setup: 
     - have apache installed
     - have dstat installed
     - run: ab -n 150 -c 50 http://52.44.172.143:80/?keywords=helloworld+foo+bar
-
-
-    
-=======
 - Enabled Google APIs: NONE
->>>>>>> eb65fd47899fac1d0c885a737b71e1d12697c226
+
+LAB 3
+- How to test backend:
+    - to print pagerank scores in greatest-to-least order: run "run_backend_test.py"
+    - to print out all data from SQL database: run "crawler.py"
+- BONUS:
+    - multithreading: NOT IMPLEMENTED YET
+    - script demonstrating increase in performance: "dne.py"
+    - Observed Performance Gain: None
