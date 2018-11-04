@@ -60,6 +60,7 @@ class crawler(object):
         self._inv_idx_cache = {}        # maps: word_id --> doc_id(s)
         self._res_inv_idx_cache = {}    # maps: word --> url(s)
         self.links = []
+        self.pagerank = {}
         self._db_conn = db_conn
 
         # Database Initialization (Persistent storage)
@@ -217,7 +218,7 @@ class crawler(object):
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
-        print ("document title=" + repr(title_text))
+        print("document title=" + repr(title_text))
 
         # TODO update document title for document id self._curr_doc_id
 
@@ -396,12 +397,13 @@ class crawler(object):
                     socket.close()
 
         # Calculate pagerank
-        pagerank = page_rank(self.links)
+        self.pagerank = page_rank(self.links)
 
         # Add page_rank scores to db
-        for doc_id in pagerank:
-            rank = (doc_id, pagerank[doc_id])
-            self._db_conn.cursor().execute("INSERT INTO page_rank VALUES (?, ?)", rank)
+        rank = []
+        for doc_id in self.pagerank:
+            rank.append((int(doc_id), self.pagerank[doc_id]))
+        self._db_conn.cursor().executemany("INSERT INTO page_rank VALUES (?, ?)", rank)
 
         # Save changes to database
         self._db_conn.commit()
@@ -418,31 +420,47 @@ class crawler(object):
 
 
 if __name__ == "__main__":
+    import pprint
 
     # Initialize database
     db_conn = sqlite3.connect("dbFile.db")
 
     # Populate the database
-    bot = crawler(db_conn, "urls/duplicate_urls.txt")
-    bot.crawl(depth=0)
+    bot = crawler(db_conn, "urls/urls.txt")
+    bot.crawl(depth=1)
 
-    # print ("\nLEXICON")
-    # for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
-    #     print(row)
-    # print("\nDOC IDX")
-    # for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
-    #     print(row)
-    # print("\nINV IDX")
-    # for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
-    #     print(row)
-    # print("\nPAGE RANK")
-    # for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
-    #     print(row)
+    print("\nLEXICON")
+    data = {}
+    for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
+        data[row[0]] = row[1]
+    pprint.pprint(data)
 
-    # print("\ndeleteing tables")
+    print("\nDOC IDX")
+    data = {}
+    for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
+        data[row[0]] = row[1]
+    pprint.pprint(data)
+
+    print("\nINV IDX")
+    data = {}
+    for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
+        data[row[0]] = row[1]
+    pprint.pprint(data)
+
+    print("\nPAGE RANK")
+    data = {}
+    for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
+        data[row[0]] = row[1]
+    pprint.pprint(data)
+    # NOTE. for some reason #s 13 and 16 are converted to binary before being stored into
+    # the SQL database (for page_rank table) and I don't know why...
+    # RESOLVED. explicitly type cast doc_id to int() before storing to database
+
+    # Delete tables from database
     db_conn.cursor().execute("DROP TABLE lexicon")
     db_conn.cursor().execute("DROP TABLE document_idx")
     db_conn.cursor().execute("DROP TABLE inverted_idx")
     db_conn.cursor().execute("DROP TABLE page_rank")
 
     db_conn.commit()
+    db_conn.close()
