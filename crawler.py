@@ -413,7 +413,7 @@ class crawler(object):
         """Return all doc_id(s) pertaining to any word_id"""
         return self._inv_idx_cache
 
-    # Returns s dict() that maps: word --> url(s)
+    # Returns a dict() that maps: word --> url(s)
     def get_resolved_inverted_index(self):
         """Return all urls matching a specific word"""
         return self._res_inv_idx_cache

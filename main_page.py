@@ -1,7 +1,8 @@
-from bottle import run, route, request, template, static_file, redirect, default_app
+from bottle import run, route, request, template, static_file, redirect, default_app, error, url
 from collections import Counter
 import json
 import httplib2
+import urllib
 
 # Libraries for Google Login
 from oauth2client.client import OAuth2WebServerFlow
@@ -16,11 +17,26 @@ from beaker.middleware import SessionMiddleware
 # Python version: 3.5.6 (3.7)
 # To run: type in 'python main_page.py'
 
-# hold entire list of words that have been searched
-total_list = Counter()
+# url link to home page
+home_url = ""
+
+# holds entire list of words that have been searched
+# total_list = Counter()
 
 # holds list of words user inputted last
 prev_list = Counter()
+
+# keyword to be used to search for URLs
+searched_word = ""
+
+# holds list for all URLs given the first word in user's input
+total_url_list = [] 
+
+# holds list for up to 5 URLs depending on the page 
+current_page_urls =[]
+
+# search history
+# popular_list = []
 
 # holds the current session
 user_session = None
@@ -32,9 +48,6 @@ session_opts = {
 }
 app = SessionMiddleware(default_app(), session_opts)
 
-# search history
-popular_list = []
-
 # holds credentials
 storage = Storage('auth_credentials')
 if storage.get() is not None:
@@ -43,8 +56,10 @@ if storage.get() is not None:
 
 @route('/')
 def keywords():
-    return template('website_template', user_input=None, keywords_list=[], popular_list=popular_list, start_site=True,
-                    user=user_session)
+    global home_url
+    home_url = request.url
+    return template('webpages/home_page', user_input=None, current_page_urls=current_page_urls, 
+                    total_url_list=total_url_list, start_site=True, user=user_session)
 
 
 @route('/', method='POST')
@@ -80,14 +95,16 @@ def display_keywords():
         redirect('/sign_out')
 
     # POST received keyboard input
-    global total_list
+    global current_page_urls
+    global total_url_list
     global prev_list
-    num_words = 20
+    global searched_word
+    global home_url
+    home_url = request.url
 
     keywords_input_raw = request.forms.get('keywords')
     user_input = None
     keywords_list = []
-    global popular_list
 
     # NOTE. form submissions may not only pertain to the search bar
     if keywords_input_raw is not None:
@@ -101,6 +118,7 @@ def display_keywords():
             keywords_list = prev_list
 
         else:
+            
             user_input = keywords_input_raw
 
             # separating string into words and putting it into an array
@@ -110,27 +128,21 @@ def display_keywords():
             keywords_list = Counter(keywords_original_list)
             prev_list = keywords_list
 
-            if user_session is not None:
-                total_list += keywords_list
+            # getting first word of user's input 
+            searched_word = keywords_original_list[0]
+
+
+
+
+            # if user_session is not None:
+            #     total_list += keywords_list
 
         # take the top 20 most popular words
-        if user_session is not None:
-            popular_list = total_list.most_common(num_words)
+        # if user_session is not None:
+        #     popular_list = total_list.most_common(num_words)
 
-    return template('website_template', user_input=user_input, keywords_list=keywords_list, popular_list=popular_list,
-                    start_site=False, user=user_session)
-
-
-# Static CSS Files
-@route('/static/<filename:re:.*\.css>')
-def send_css(filename):
-    return static_file(filename, root='static')
-
-
-# Static jpg files
-@route('/images/<filename:re:.*\.jpg>')
-def send_img(filename):
-    return static_file(filename, root="images")
+    return template('webpages/home_page', user_input=user_input, current_page_urls=current_page_urls, 
+                    total_url_list=total_url_list, start_site=False, user=user_session)
 
 
 @route('/sign_in')
@@ -200,6 +212,28 @@ def sign_out():
     user_session = None
 
     redirect('/')
+
+
+@error(404)
+def error_handler_404(error):
+    return template('webpages/error_page', home_url=home_url, user=user_session)
+
+# Static CSS Files
+@route('/style/<filename:re:.*\.css>')
+def send_css(filename):
+    return static_file(filename, root='style')
+
+# Static JavaScript Files
+@route('/js/<filename:re:.*\.js>')
+def send_javscript(filename):
+    print("filename: " + filename)
+    return static_file(filename, root='js')
+
+# Static jpg files
+@route('/images/<filename:re:.*\.jpg>')
+def send_img(filename):
+    return static_file(filename, root="images")
+
 
 
 run(app, host='localhost', port=8080, debug=True)
