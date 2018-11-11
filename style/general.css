@@ -1,0 +1,25 @@
+/* NOTE:
+If values are never being updated on the webpage, it's because of the caching of the website
+
+Fix: shift + f5 (windows)
+*/
+
+html, body{
+    height: 90%;
+    padding:0; 
+    margin:0;
+    /* background-color: #1e3799; */
+    background-image: url("../images/page_background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+header{
+    margin-top: 5%;
+}
+
+a.links{
+    color: white;
+}
+

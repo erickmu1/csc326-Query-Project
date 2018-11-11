@@ -5,6 +5,7 @@ div.search_bar {
 }
 
 form{
+    position: relative;
     height: auto;
     width: 50%;
     margin:auto;
@@ -13,9 +14,9 @@ form{
     display: flex;
     flex-direction: row;
     justify-content: center;
-
     filter: drop-shadow(3px 3px 3px #000000);
 }
+
 
 input {
     border: 1px dotted #999;
@@ -26,3 +27,25 @@ input {
 input.search_input{
     width: 20em;
 }
+
+section.user_input{
+    height: 8%;
+    margin: 1em auto;
+
+    padding:5px; 
+
+    width: 70%;
+    overflow: auto;
+
+}
+
+p.user_input{
+    font-family: Rockwell, sans-serif;
+    color: white;
+    font-size: 1.4em;
+    text-align: center;
+
+    padding:0; 
+    margin:0;
+}
+

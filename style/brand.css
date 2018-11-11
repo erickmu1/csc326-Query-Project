@@ -1,14 +1,3 @@
-html, body{
-    height: 90%;
-    padding:0; 
-    margin:0;
-    background: #1e3799;
-}
-
-header{
-    margin-top: 5%;
-}
-
 
 section.search_brand{
     font-family: Rockwell, sans-serif;
@@ -39,29 +28,7 @@ img.logo{
 
     margin: 10px;
 
-    background-color: #1e3799;
-
-}
-
-section.user_input{
-    height: 8%;
-    margin: 1em auto;
-
-    padding:5px; 
-
-    width: 70%;
-    overflow: auto;
-
-}
-
-p.user_input{
-    font-family: Rockwell, sans-serif;
-    color: white;
-    font-size: 1.4em;
-    text-align: center;
-
-    padding:0; 
-    margin:0;
+    background-color: white;
 
 }
 

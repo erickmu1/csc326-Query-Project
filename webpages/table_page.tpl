@@ -2,9 +2,9 @@
 <html>
     <head>
         <!-- Retrieving CSS files -->
-        <link rel="stylesheet" href="/static/style.css">
-        <link rel="stylesheet" href="/static/search-bar.css">
-        <link rel="stylesheet" href="/static/table.css">
+        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="../static/search-bar.css">
+        <link rel="stylesheet" href="../static/table.css">
         <title>Ace Search Systems</title>
         <style>
         .right {
@@ -27,7 +27,7 @@
             margin:0;
         }
         </style>
-            </head>
+    </head>
     <body>
 
         <!-- Leave empty for now -->
@@ -46,7 +46,7 @@
             <!-- User Identifier -->
             <div class="left">
             %if user is not None:
-                <p class = "email">Welcome!<br>{{user['email']}}</br></p>
+                <p class = "email">Welcome!<br>{{user['email']}}</p>
             %end
             </div>
         </header>
@@ -54,7 +54,7 @@
         <!-- Brand name and logo -->
         <section class = "search_brand">
                 <p class = "brand_name"> Ace Search Systems </p>
-                <img class = "logo" src = "images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
+                <img class = "logo" src = "../images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
         </section>
 
         <!-- Search bar -->
@@ -85,13 +85,13 @@
             <div class="table_format">
                 <table id="results" class = "results_format">
                     <tr class = "table_header">
-                        <td><b>Searched Word</b></td>
+                        <td class = "no_border"><b>Searched Word</b></td>
                         <td><b>Count</b></td>
                     </tr>
 
                     %for keyword in keywords_list:
                         <tr class = "table_results">
-                            <td>{{keyword}}</td>
+                            <td class = "no_border">{{keyword}}</td>
                             <td>{{keywords_list[keyword]}}</td>
                         <tr>
                     %end
@@ -102,13 +102,13 @@
                 <table id="history" class = "results_format">
 
                     <tr class = "table_header">
-                        <td><b>Top 20 Words</b></td>
+                        <td class = "no_border"><b>Top 20 Words</b></td>
                         <td><b>Count</b></td>
                     </tr>
 
                     %for popular in popular_list:
                         <tr class = "table_results">
-                            <td>{{popular[0]}}</td>
+                            <td class = "no_border">{{popular[0]}}</td>
                             <td>{{popular[1]}}</td>
                         <tr>
                     %end

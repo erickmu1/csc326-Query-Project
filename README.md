@@ -8,7 +8,6 @@ LAB 1
 - test cases for the crawler can be found in the urls folder
 
 LAB 2
-<<<<<<< HEAD
 - public IP address: 52.44.172.143
 - benchmark setup: 
     - have apache installed
@@ -17,6 +16,3 @@ LAB 2
 
 
     
-=======
-- Enabled Google APIs: NONE
->>>>>>> eb65fd47899fac1d0c885a737b71e1d12697c226
