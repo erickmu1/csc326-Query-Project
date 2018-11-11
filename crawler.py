@@ -427,7 +427,7 @@ if __name__ == "__main__":
 
     # Populate the database
     bot = crawler(db_conn, "urls/urls.txt")
-    bot.crawl(depth=1)
+    bot.crawl(depth=0)
 
     print("\nLEXICON")
     data = {}
@@ -464,3 +464,6 @@ if __name__ == "__main__":
 
     db_conn.commit()
     db_conn.close()
+
+    print('\nLinks\n')
+    print(bot.links)
