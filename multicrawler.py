@@ -29,6 +29,7 @@ from collections import defaultdict
 import re
 from pagerank import page_rank
 import sqlite3
+import threading
 
 
 def attr(elem, attr):
@@ -43,7 +44,7 @@ def attr(elem, attr):
 WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 
 
-class crawler(object):
+class multicrawler(object):
     """Represents 'Googlebot'. Populates a database by crawling and indexing
     a subset of the Internet.
 
@@ -62,6 +63,7 @@ class crawler(object):
         self.links = []
         self.pagerank = {}
         self._db_conn = db_conn
+        self.lock = threading.Lock()
 
         # Database Initialization (Persistent storage)
         if db_conn is not None:
@@ -159,10 +161,6 @@ class crawler(object):
         """A function that pretends to inster a word into the lexicon db table
         and then returns that newly inserted word's id."""
 
-        # Insert word to lexicon db table
-        lex_pair = (self._mock_next_word_id, word)
-        self._db_conn.cursor().execute("INSERT INTO lexicon VALUES (?, ?)", lex_pair)
-
         # Update current word_id
         ret_id = self._mock_next_word_id
         self._mock_next_word_id += 1
@@ -218,7 +216,7 @@ class crawler(object):
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
-        # print("document title=" + repr(title_text))
+        print("document title=" + repr(title_text))
 
         # TODO update document title for document id self._curr_doc_id
 
@@ -245,16 +243,10 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
-        # print ("    num words=" + str(len(self._curr_words)))
+        print ("    num words=" + str(len(self._curr_words)))
 
         # Add information (doc_idx) pertaining to current document indexed by doc_id
         self._doc_idx_cache[self._curr_doc_id] = self._curr_words
-
-        # Add word_ids (doc_idx) to document_idx db table
-        doc_idx = []
-        for word_font_pair in self._curr_words:
-            doc_idx.append((self._curr_doc_id, word_font_pair[0]))
-        self._db_conn.cursor().executemany("INSERT INTO page_content VALUES(?, ?)", doc_idx)
 
         # TODO: add Title and Description to doc_idx
 
@@ -354,43 +346,119 @@ class crawler(object):
     def crawl(self, depth=2, timeout=3):  # was set depth = 2
         """Crawl the web!"""
         seen = set()
+        seen_lock = threading.Lock()
+        thread_list = []
 
-        while len(self._url_queue):
+        while len(self._url_queue) > 0 or len(thread_list) > 0:
 
+            # Make up to 4 threads
+            if len(thread_list) < 4 and len(self._url_queue) > 0:
+                t = threading.Thread(target=self.crawl_page, args=(seen, depth, seen_lock, timeout))
+                t.start()
+                thread_list.append(t)
+
+            # Will individually check each thread if finished
+            print('Checking')
+            print(len(thread_list))
+            if (0 < len(thread_list)) and (not thread_list[0].is_alive()):
+                del thread_list[0]
+
+            if (1 < len(thread_list)) and (not thread_list[1].is_alive()):
+                del thread_list[1]
+
+            if (2 < len(thread_list)) and (not thread_list[2].is_alive()):
+                del thread_list[2]
+
+            if (3 < len(thread_list)) and (not thread_list[3].is_alive()):
+                del thread_list[3]
+
+        # Join all remaining threads
+        for t in thread_list:
+            t.join()
+
+        # Populate all tables in the database
+        self.populate_database()
+
+    # Returns a dict() that maps: word_id --> doc_id(s)
+    def get_inverted_index(self):
+        """Return all doc_id(s) pertaining to any word_id"""
+        return self._inv_idx_cache
+
+    # Returns a dict() that maps: word --> url(s)
+    def get_resolved_inverted_index(self):
+        """Return all urls matching a specific word"""
+        return self._res_inv_idx_cache
+
+    # Crawls the current page
+    def crawl_page(self, seen, depth, seen_lock, timeout):
+
+        self.lock.acquire()
+        empty = False
+        if len(self._url_queue) > 0:
             url, depth_ = self._url_queue.pop()
+        else:
+            empty = True
+        self.lock.release()
+        if empty:
+            return
 
-            # skip this url; it's too deep
-            if depth_ > depth:
-                continue
+        # skip this url; it's too deep
+        if depth_ > depth:
+            return
 
-            doc_id = self.document_id(url)
+        self.lock.acquire()
+        doc_id = self.document_id(url)
+        self.lock.release()
 
-            # we've already seen this document
-            if doc_id in seen:
-                continue
+        # we've already seen this document
+        seen_lock.acquire()
+        if doc_id in seen:
+            return
 
-            seen.add(doc_id)  # mark this document as haven't been visited
+        seen.add(doc_id)  # mark this document as haven't been visited
+        seen_lock.release()
 
-            socket = None
-            try:
-                socket = urllib2.urlopen(url, timeout=timeout)
-                soup = BeautifulSoup(socket.read(), features='html.parser')
+        socket = None
+        try:
+            socket = urllib2.urlopen(url, timeout=timeout)
+            soup = BeautifulSoup(socket.read(), features='html.parser')
 
-                self._curr_depth = depth_ + 1
-                self._curr_url = url
-                self._curr_doc_id = doc_id
-                self._font_size = 0
-                self._curr_words = []
-                self._index_document(soup)  # Inside this function is where we call at some point add_link()
-                self._add_words_to_document()  # updates dict() that maps: doc_id --> doc_idx
-                # print ("    url=" + repr(self._curr_url))
+            # LOCK updating members
+            self.lock.acquire()
 
-            except Exception as e:
-                print (e)
-                pass
-            finally:
-                if socket:
-                    socket.close()
+            self._curr_depth = depth_ + 1
+            self._curr_url = url
+            self._curr_doc_id = doc_id
+            self._font_size = 0
+            self._curr_words = []
+            self._index_document(soup)
+            self._add_words_to_document()  # updates dict() that maps: doc_id --> doc_idx
+            print("    url=" + repr(self._curr_url))
+
+            self.lock.release()
+
+        except Exception as e:
+            print(e)
+            pass
+        finally:
+            if socket:
+                socket.close()
+
+    def populate_database(self):
+        """Populate database tables all at once"""
+
+        # Populate LEXICON
+        new_data = []
+        for word in self._word_id_cache:
+            new_data.append((word, int(self._word_id_cache[word])))
+        self._db_conn.cursor().executemany("INSERT INTO lexicon VALUES (?, ?)", new_data)
+
+        # Populate PAGE_CONTENT
+        new_data = []
+        for doc_id in self._doc_idx_cache:
+            for word in self._doc_idx_cache[doc_id]:
+                new_data.append((int(doc_id), word[0]))
+        self._db_conn.cursor().executemany("INSERT INTO page_content VALUES (?, ?)", new_data)
 
         # Calculate Page_Ranks
         if len(self.links) > 0:
@@ -406,14 +474,12 @@ class crawler(object):
                 new_data.append((url, doc_id, 0.0))
         self._db_conn.cursor().executemany("INSERT INTO document VALUES (?, ?, ?)", new_data)
 
-        # STORE Resolved Inverted Index
+        # Populate RESOLVED_MAP
         resolved_map = []
-
         for word in self._res_inv_idx_cache:
             for url in self._res_inv_idx_cache[word]:
 
                 doc_id = self._doc_id_cache[url]
-
                 # Insert URL with page_rank score
                 if doc_id in self.pagerank:
                     resolved_map.append((word, url, self.pagerank[doc_id]))
@@ -421,84 +487,12 @@ class crawler(object):
                 # These will be given a default score of "0" because they aren't sent to page_rank()
                 else:
                     resolved_map.append((word, url, 0.0))
-
         self._db_conn.cursor().executemany("INSERT INTO resolved_map VALUES (?, ?, ?)", resolved_map)
 
         # Save changes to database
         self._db_conn.commit()
 
-    # Returns a dict() that maps: word_id --> doc_id(s)
-    def get_inverted_index(self):
-        """Return all doc_id(s) pertaining to any word_id"""
-        return self._inv_idx_cache
 
-    # Returns a dict() that maps: word --> url(s)
-    def get_resolved_inverted_index(self):
-        """Return all urls matching a specific word"""
-        return self._res_inv_idx_cache
-
-
-<<<<<<< HEAD
-# if __name__ == "__main__":
-import pprint
-
-# Initialize database
-db_conn = sqlite3.connect("dbFile.db")
-
-# Populate the database
-bot = crawler(db_conn, "urls/urls.txt")
-bot.crawl(depth=1)
-
-# print("\nLEXICON")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
-#     data[row[0]] = row[1]
-# pprint.pprint(data)
-
-# print("\nDOC IDX")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
-#     data[row[0]] = row[1]
-# pprint.pprint(data)
-
-# print("\nINV IDX")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
-#     data[row[0]] = row[1]
-# pprint.pprint(data)
-
-# print("\nPAGE RANK")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
-#     data[row[0]] = row[1]
-# pprint.pprint(data)
-
-# print("\nMAPPING")
-# data = []
-# for row in db_conn.cursor().execute("SELECT * FROM resolved_inverted_index"):
-#     data.append(row)
-# pprint.pprint(data)
-
-# NOTE. for some reason #s 13 and 16 are converted to binary before being stored into
-# the SQL database (for page_rank table) and I don't know why...
-# RESOLVED. explicitly type cast doc_id to int() before storing to database
-
-
-
-
-# Delete tables from database
-# db_conn.cursor().execute("DROP TABLE lexicon")
-# db_conn.cursor().execute("DROP TABLE document_idx")
-# db_conn.cursor().execute("DROP TABLE inverted_idx")
-# db_conn.cursor().execute("DROP TABLE page_rank")
-# db_conn.cursor().execute("DROP TABLE resolved_inverted_index")
-
-# db_conn.commit()
-db_conn.close()
-
-# print('\nLinks\n')
-# print(bot.links)
-=======
 if __name__ == "__main__":
     import pprint
 
@@ -506,7 +500,7 @@ if __name__ == "__main__":
     db_conn = sqlite3.connect("dbFile.db")
 
     # Populate the database
-    bot = crawler(db_conn, "urls/urls.txt")
+    bot = multicrawler(db_conn, "urls/urls.txt")
     bot.crawl(depth=0)
 
     print("\nLEXICON")
@@ -515,13 +509,13 @@ if __name__ == "__main__":
         data.append(row)
     pprint.pprint(data)
 
-    print("\nCONTENT on PAGEs")
+    print("\nPAGE CONTENTs")
     data = []
     for row in db_conn.cursor().execute("SELECT * FROM page_content"):
         data.append(row)
     pprint.pprint(data)
 
-    print("\nURLs and PAGE RANKs")
+    print("\nPAGE RANK")
     data = []
     for row in db_conn.cursor().execute("SELECT * FROM document"):
         data.append(row)
@@ -544,4 +538,6 @@ if __name__ == "__main__":
 
     db_conn.commit()
     db_conn.close()
->>>>>>> 895bfaabc0040a32379ae91cf8f6559b9bac0c4f
+
+    print('\nLinks\n')
+    print(bot.links)
