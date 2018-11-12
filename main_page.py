@@ -15,6 +15,10 @@ from googleapiclient.discovery import build
 # Library for Beaker session management
 from beaker.middleware import SessionMiddleware
 
+# Library for Database Management
+import sqlite3
+import database_access
+
 # Python version: 3.5.6 (3.7)
 # To run: type in 'python main_page.py'
 
@@ -53,6 +57,9 @@ app = SessionMiddleware(default_app(), session_opts)
 storage = Storage('auth_credentials')
 if storage.get() is not None:
     storage.delete()
+
+# Database Connection
+db_conn = sqlite3.connect('dbFile.db')
 
 
 @route('/')
