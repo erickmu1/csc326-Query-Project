@@ -14,5 +14,10 @@ LAB 2
     - have dstat installed
     - run: ab -n 150 -c 50 http://52.44.172.143:80/?keywords=helloworld+foo+bar
 
+LAB 3
+- to run webiste: run "crawler.py". Then un "main_page.py" and go to "http://localhost:8080/"
+
+- Bonus features:
+    - JavaScript and AJAX for dynamic changing of links (complete)
 
     
