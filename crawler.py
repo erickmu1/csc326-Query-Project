@@ -438,7 +438,6 @@ class crawler(object):
         return self._res_inv_idx_cache
 
 
-<<<<<<< HEAD
 # if __name__ == "__main__":
 import pprint
 
@@ -498,50 +497,3 @@ db_conn.close()
 
 # print('\nLinks\n')
 # print(bot.links)
-=======
-if __name__ == "__main__":
-    import pprint
-
-    # Initialize database
-    db_conn = sqlite3.connect("dbFile.db")
-
-    # Populate the database
-    bot = crawler(db_conn, "urls/urls.txt")
-    bot.crawl(depth=0)
-
-    print("\nLEXICON")
-    data = []
-    for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
-        data.append(row)
-    pprint.pprint(data)
-
-    print("\nCONTENT on PAGEs")
-    data = []
-    for row in db_conn.cursor().execute("SELECT * FROM page_content"):
-        data.append(row)
-    pprint.pprint(data)
-
-    print("\nURLs and PAGE RANKs")
-    data = []
-    for row in db_conn.cursor().execute("SELECT * FROM document"):
-        data.append(row)
-    pprint.pprint(data)
-
-    print("\nMAPPING")
-    data = []
-    for row in db_conn.cursor().execute("SELECT * FROM resolved_map"):
-        data.append(row)
-    pprint.pprint(data)
-    # NOTE. for some reason #s 13 and 16 are converted to binary before being stored into
-    # the SQL database (for page_rank table) and I don't know why...
-    # RESOLVED. explicitly type cast doc_id to int() before storing to database
-
-    # Delete tables from database
-    db_conn.cursor().execute("DROP TABLE lexicon")
-    db_conn.cursor().execute("DROP TABLE page_content")
-    db_conn.cursor().execute("DROP TABLE document")
-    db_conn.cursor().execute("DROP TABLE resolved_map")
-
-    db_conn.commit()
-    db_conn.close()
->>>>>>> 895bfaabc0040a32379ae91cf8f6559b9bac0c4f

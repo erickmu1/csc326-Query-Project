@@ -4,8 +4,7 @@
 //Rank URLs by their PageRank
 //Need to check if file exists
 
-var first_page = true;
-var page_num;
+var page_num = 1;
 
 function loadDoc(){
 
@@ -32,23 +31,15 @@ function displayURL(arr) {
     var buttons;
     var i;
 
-    if (arr.length > 5) {
-        if (first_page == true){
-            page_num = 1;
-            buttons = '<button onclick="incrPageNum()">Next page</button>';
-        }
+if (arr.length > 5) {
+    if (page_num == 1) buttons = '<button onclick="incrPageNum()">Next page</button>';
 
-        else if (first_page == false && page_num < arr.length/5) {
-            buttons = '<button onclick="decrPageNum()">Previous page</button> <button onclick="incrPageNum()">Next page</button>';
-        }
+    else if (page_num < arr.length/5) buttons = '<button onclick="decrPageNum()">Previous page</button> <button onclick="incrPageNum()">Next page</button>';
 
+    else buttons = '<button onclick="decrPageNum()">Previous page</button>';
 
-        else {
-            buttons = '<button onclick="decrPageNum()">Previous page</button>';
-        }
-
-
-    }
+    document.getElementById("page_buttons").innerHTML = buttons;
+}
 
 
     i = (page_num-1)*5;
@@ -63,16 +54,12 @@ function displayURL(arr) {
 
     document.getElementById("results").innerHTML = url;
 
-    document.getElementById("page_buttons").innerHTML = buttons;
 
 }
 
 function incrPageNum(){
     page_num++;
     console.log(page_num);
-    if (page_num > 1){
-        first_page = false;
-    }
 
     loadDoc();
 
@@ -83,10 +70,6 @@ function decrPageNum(){
     if (page_num > 1 ){
         page_num--;
         console.log(page_num);
-        if (page_num == 1){
-            first_page = true;
-        }
-
         loadDoc();
     }
 
