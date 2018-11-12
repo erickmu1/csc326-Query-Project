@@ -1,8 +1,4 @@
-//Have a button that "switches to the next page"
 //Need to show no results appeared if nothing occurs
-//Remove button when user does not type anything
-//Rank URLs by their PageRank
-//Need to check if file exists
 
 var page_num = 1;
 
@@ -27,43 +23,52 @@ function loadDoc(){
 }
 
 function displayURL(arr) {
-    var url = '<tr class="table_header"> <td><b>Results</b></td></tr>';
+    var table_header = '<p class="table_format"> No results found</p>';
+    var url = '';
     var buttons;
     var i;
 
-if (arr.length > 5) {
-    if (page_num == 1) buttons = '<button onclick="incrPageNum()">Next page</button>';
+    if (arr.length < 1){
+        table_header = '<p class="table_format"> No results found</p>';
+        document.getElementById("table_header").innerHTML=table_header;
 
-    else if (page_num < arr.length/5) buttons = '<button onclick="decrPageNum()">Previous page</button> <button onclick="incrPageNum()">Next page</button>';
+    }
 
-    else buttons = '<button onclick="decrPageNum()">Previous page</button>';
+    else {
+        table_header = '<p class="table_format"> Results</p>';
+        document.getElementById("table_header").innerHTML=table_header;
 
-    document.getElementById("page_buttons").innerHTML = buttons;
-}
+        i = (page_num-1)*5;
 
-
-    i = (page_num-1)*5;
-
-    while (i < arr.length){
-        if (i < page_num*5){
-            url += '<tr class="data"><td class="data"><a class="links" href=' + arr[i] + '>' + arr[i] + '</a></td></tr>';
-            i++;
+        while (i < arr.length){
+            if (i < page_num*5){
+                url += '<tr class="data"><td class="data"><a class="links" href=' + arr[i] + ' style="text-decoration: none;">' + (i+1) + '. <u>' + arr[i] + '</u></a></td></tr>';
+                i++;
+            }
+            if (i == page_num*5) break;
         }
-        if (i == page_num*5) break;
     }
 
     document.getElementById("results").innerHTML = url;
 
+    if (arr.length > 5) {
+        if (page_num == 1) 
+            buttons = '<button onclick="incrPageNum()">Next page</button>';
+
+        else if (page_num < arr.length/5) 
+            buttons = '<button onclick="decrPageNum()">Previous page</button> <button onclick="incrPageNum()">Next page</button>';
+
+        else buttons = '<button onclick="decrPageNum()">Previous page</button>';
+
+        document.getElementById("page_buttons").innerHTML = buttons;
+    }
 
 }
 
 function incrPageNum(){
     page_num++;
     console.log(page_num);
-
     loadDoc();
-
-
 }
 
 function decrPageNum(){
@@ -72,6 +77,4 @@ function decrPageNum(){
         console.log(page_num);
         loadDoc();
     }
-
-
 }

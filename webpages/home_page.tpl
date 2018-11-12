@@ -5,35 +5,12 @@
         <link rel="stylesheet" href="../style/general.css">
         <link rel="stylesheet" href="../style/brand.css">
         <link rel="stylesheet" href="../style/search-bar.css">
-        <link rel="stylesheet" href="../style/table.css">
-        <link rel="stylesheet" href="../style/buttons.css">
+        <link rel="stylesheet" href="../style/search-results.css">
 
         <script type="text/javascript" src="../js/display_urls.js"></script>
-        <script type="text/javascript" src="../js/require.js"></script>
 
         <title>Ace Search Systems</title>
 
-        <style>
-        .right {
-            float: right;
-            width: 100px;
-            padding: 10px;
-        }
-        .left {
-            float: left;
-            width: 100px;
-            padding: 10px;
-        }
-        p.email{
-            font-family: Rockwell, sans-serif;
-            color: white;
-            font-size: 1.0em;
-            text-align: left;
-
-            padding:0;
-            margin:0;
-        }
-        </style>
     </head>
     <body>
         <header>
@@ -59,8 +36,8 @@
         </header>
         <!-- Brand name and logo -->
         <section class = "search_brand">
-                <p class = "brand_name"> Ace Search Systems </p>
-                <img class = "logo" src = "../images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
+            <p class = "brand_name"> Ace Search Systems </p>
+            <img class = "logo" src = "../images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
         </section>
 
         <!-- Search bar -->
@@ -80,26 +57,34 @@
 
             %elif user_input != None:
                 <p class = "user_input">Searched for: "{{user_input}}"</p>
+                %if no_url_found == True:
+                    <p class = "user_input">No results found</p>
+                %end
 
             %end
 
         </section>
 
-        <!-- Table of results and result history -->
-        <!-- %if user is not None: -->
-        <div class="table_format">
-            <table id="results" class="results_format">
-        </div>
-        <!-- %end -->
-        
-        <div id="page_buttons">
+        <section class="search_results">
+            <!-- Table of results and result history -->
+            <!-- %if user is not None: -->
+            <div id="table_header"></div>
 
-        </div>
+            <div class="table_format">
+                <table id="results" class="results_format">
+                </table>
+            </div>
+            <!-- %end -->
+            
+            <div id="page_buttons"></div>
+        </section>
 
 
-        <script type = "text/javascript">
-            loadDoc();
-        </script>
+        %if no_url_found == False:
+            <script type = "text/javascript">
+                loadDoc();
+            </script>
+        %end
 
     </body>
 

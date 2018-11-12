@@ -2,7 +2,9 @@
 <html>
     <head>
         <!-- Retrieving CSS files -->
-        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="../style/general.css">
+        <link rel="stylesheet" href="../style/brand.css">
+        <link rel="stylesheet" href="../style/search-bar.css">
 
         <title>Ace Search Systems</title>
         <style>

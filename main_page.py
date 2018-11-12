@@ -25,9 +25,6 @@ import database_access
 # url link to home page
 home_url = ""
 
-# holds entire list of words that have been searched
-# total_list = Counter()
-
 # holds list of words user inputted last
 prev_list = Counter()
 
@@ -36,12 +33,6 @@ searched_word = ""
 
 # holds list for all URLs given the first word in user's input
 total_url_list = [] 
-
-# holds list for up to 5 URLs depending on the page 
-current_page_urls =[]
-
-# search history
-# popular_list = []
 
 # holds the current session
 user_session = None
@@ -66,7 +57,8 @@ db_conn = sqlite3.connect('dbFile.db')
 def keywords():
     global home_url
     home_url = request.url
-    return template('webpages/home_page', user_input=None, current_page_urls=current_page_urls, 
+    no_url_found = True
+    return template('webpages/home_page', user_input=None, no_url_found=no_url_found,
                     total_url_list=total_url_list, start_site=True, user=user_session)
 
 
@@ -103,7 +95,6 @@ def display_keywords():
         redirect('/sign_out')
 
     # POST received keyboard input
-    global current_page_urls
     global total_url_list
     global prev_list
     global searched_word
@@ -113,6 +104,8 @@ def display_keywords():
     keywords_input_raw = request.forms.get('keywords')
     user_input = None
     keywords_list = []
+
+    no_url_found = True
 
     # NOTE. form submissions may not only pertain to the search bar
     if keywords_input_raw is not None:
@@ -141,13 +134,19 @@ def display_keywords():
             total_url_list = find_urls(db_conn, searched_word)
 
 
-            # Check if file exists. If not, create a new one
-            with open('json/url_results.json', 'w') as outfile:
-                json.dump(total_url_list, outfile)
+            if not total_url_list:
+                no_url_found = True
+            else:
+                # Check if file exists. If not, create a new one
+                with open('json/url_results.json', 'w') as outfile:
+                    json.dump(total_url_list, outfile)
+                no_url_found = False
+                
+            
 
 
 
-    return template('webpages/home_page', user_input=user_input, current_page_urls=current_page_urls, 
+    return template('webpages/home_page', user_input=user_input, no_url_found=no_url_found,
                     total_url_list=total_url_list, start_site=False, user=user_session)
 
 

@@ -7,11 +7,9 @@ def find_urls(db_conn, keyword):
 
     url_list = []
 
-    # for row in db_conn.cursor().execute("SELECT url FROM resolved_inverted_index WHERE word = ? ORDER BY rank_score DESC", (keyword,)):
-    for row in db_conn.cursor().execute("SELECT DISTINCT url FROM resolved_inverted_index WHERE word = ? ORDER BY rank_score DESC", (keyword,)):
+    for row in db_conn.cursor().execute("SELECT DISTINCT url FROM resolved_map WHERE word = ? ORDER BY page_rank DESC", (keyword,)):
     
         url_list.append(row[0])
-
 
     return url_list
 

@@ -449,40 +449,32 @@ bot = crawler(db_conn, "urls/urls.txt")
 bot.crawl(depth=1)
 
 # print("\nLEXICON")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
-#     data[row[0]] = row[1]
+data = []
+for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
+    data.append(row)
 # pprint.pprint(data)
 
-# print("\nDOC IDX")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
-#     data[row[0]] = row[1]
-# pprint.pprint(data)
-
-# print("\nINV IDX")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
-#     data[row[0]] = row[1]
+# print("\nPAGE CONTENTs")
+data = []
+for row in db_conn.cursor().execute("SELECT * FROM page_content"):
+    data.append(row)
 # pprint.pprint(data)
 
 # print("\nPAGE RANK")
-# data = {}
-# for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
-#     data[row[0]] = row[1]
+data = []
+for row in db_conn.cursor().execute("SELECT * FROM document"):
+    data.append(row)
 # pprint.pprint(data)
 
 # print("\nMAPPING")
-# data = []
-# for row in db_conn.cursor().execute("SELECT * FROM resolved_inverted_index"):
-#     data.append(row)
+data = []
+for row in db_conn.cursor().execute("SELECT * FROM resolved_map"):
+    data.append(row)
 # pprint.pprint(data)
 
 # NOTE. for some reason #s 13 and 16 are converted to binary before being stored into
 # the SQL database (for page_rank table) and I don't know why...
 # RESOLVED. explicitly type cast doc_id to int() before storing to database
-
-
 
 
 # Delete tables from database
