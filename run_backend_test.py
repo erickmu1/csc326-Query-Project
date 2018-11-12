@@ -11,8 +11,8 @@ from multicrawler import multicrawler
 db_conn = sqlite3.connect('dbFile.db')
 
 # Run Crawler --> Calls PageRank --> Populates database
-bot = crawler(db_conn, 'urls/urls.txt')
-# bot = multicrawler(db_conn, 'urls/urls.txt')
+# bot = crawler(db_conn, 'urls/urls.txt')
+bot = multicrawler(db_conn, 'urls/urls.txt')
 bot.crawl(depth=1)
 
 # Print PageRanks sorted in greatest-to-least order from database

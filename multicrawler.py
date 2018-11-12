@@ -347,34 +347,12 @@ class multicrawler(object):
         """Crawl the web!"""
         seen = set()
         seen_lock = threading.Lock()
-        thread_list = []
 
-        while len(self._url_queue) > 0 or len(thread_list) > 0:
+        while len(self._url_queue) > 0 or threading.active_count() > 1:
 
-            # Make up to 4 threads
-            if len(thread_list) < 4 and len(self._url_queue) > 0:
-                t = threading.Thread(target=self.crawl_page, args=(seen, depth, seen_lock, timeout))
-                t.start()
-                thread_list.append(t)
-
-            # Will individually check each thread if finished
-            print('Checking')
-            print(len(thread_list))
-            if (0 < len(thread_list)) and (not thread_list[0].is_alive()):
-                del thread_list[0]
-
-            if (1 < len(thread_list)) and (not thread_list[1].is_alive()):
-                del thread_list[1]
-
-            if (2 < len(thread_list)) and (not thread_list[2].is_alive()):
-                del thread_list[2]
-
-            if (3 < len(thread_list)) and (not thread_list[3].is_alive()):
-                del thread_list[3]
-
-        # Join all remaining threads
-        for t in thread_list:
-            t.join()
+            # Make as many threads as needed
+            t = threading.Thread(target=self.crawl_page, args=(seen, depth, seen_lock, timeout))
+            t.start()
 
         # Populate all tables in the database
         self.populate_database()
@@ -393,19 +371,16 @@ class multicrawler(object):
     def crawl_page(self, seen, depth, seen_lock, timeout):
 
         self.lock.acquire()
-        empty = False
         if len(self._url_queue) > 0:
             url, depth_ = self._url_queue.pop()
         else:
-            empty = True
-        self.lock.release()
-        if empty:
+            self.lock.release()
             return
+        self.lock.release()
 
         # skip this url; it's too deep
         if depth_ > depth:
             return
-
         self.lock.acquire()
         doc_id = self.document_id(url)
         self.lock.release()
@@ -413,11 +388,12 @@ class multicrawler(object):
         # we've already seen this document
         seen_lock.acquire()
         if doc_id in seen:
+            seen_lock.release()
             return
-
-        seen.add(doc_id)  # mark this document as haven't been visited
+        seen.add(doc_id)    # mark this document as haven't been visited
         seen_lock.release()
 
+        # Connect to webpage
         socket = None
         try:
             socket = urllib2.urlopen(url, timeout=timeout)
