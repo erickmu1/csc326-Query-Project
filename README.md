@@ -20,11 +20,8 @@ Frontend:
 - To run website: run "multicrawler.py". Then run "main_page.py" and go to http://18.211.236.148
 - BONUS: JavaScript and AJAX for dynamic changing of links (Completed)
 
-<<<<<<< HEAD
 Backend:
-=======
 - To populate database "dbFile.db" run either crawler.py or multicrawler.py (multi-threaded crawler)
->>>>>>> 6a7416a61e67ba04b510bbd8a7c0a14d00368573
 - To run backend to demonstrate required functionality run "run_backend_test.py"
 - The following information can be found in the following tables"
     - lexicon in **lexicon** table
