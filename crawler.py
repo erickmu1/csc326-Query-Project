@@ -219,7 +219,7 @@ class crawler(object):
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
-        print("document title=" + repr(title_text))
+        # print("document title=" + repr(title_text))
 
         # TODO update document title for document id self._curr_doc_id
 
@@ -246,7 +246,7 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
-        print ("    num words=" + str(len(self._curr_words)))
+        # print ("    num words=" + str(len(self._curr_words)))
 
         # Add information (doc_idx) pertaining to current document indexed by doc_id
         self._doc_idx_cache[self._curr_doc_id] = self._curr_words
@@ -388,7 +388,7 @@ class crawler(object):
                 self._curr_words = []
                 self._index_document(soup)
                 self._add_words_to_document()  # updates dict() that maps: doc_id --> doc_idx
-                print ("    url=" + repr(self._curr_url))
+                # print ("    url=" + repr(self._curr_url))
 
             except Exception as e:
                 print (e)
@@ -439,52 +439,62 @@ class crawler(object):
         return self._res_inv_idx_cache
 
 
-if __name__ == "__main__":
-    import pprint
+# if __name__ == "__main__":
+import pprint
 
-    # Initialize database
-    db_conn = sqlite3.connect("dbFile.db")
+# Initialize database
+db_conn = sqlite3.connect("dbFile.db")
 
-    # Populate the database
-    bot = crawler(db_conn, "urls/urls.txt")
-    bot.crawl(depth=0)
+# Populate the database
+bot = crawler(db_conn, "urls/urls.txt")
+bot.crawl(depth=1)
 
-    print("\nLEXICON")
-    data = {}
-    for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
-        data[row[0]] = row[1]
-    pprint.pprint(data)
+# print("\nLEXICON")
+# data = {}
+# for row in db_conn.cursor().execute("SELECT * FROM lexicon"):
+#     data[row[0]] = row[1]
+# pprint.pprint(data)
 
-    print("\nDOC IDX")
-    data = {}
-    for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
-        data[row[0]] = row[1]
-    pprint.pprint(data)
+# print("\nDOC IDX")
+# data = {}
+# for row in db_conn.cursor().execute("SELECT * FROM document_idx"):
+#     data[row[0]] = row[1]
+# pprint.pprint(data)
 
-    print("\nINV IDX")
-    data = {}
-    for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
-        data[row[0]] = row[1]
-    pprint.pprint(data)
+# print("\nINV IDX")
+# data = {}
+# for row in db_conn.cursor().execute("SELECT * FROM inverted_idx"):
+#     data[row[0]] = row[1]
+# pprint.pprint(data)
 
-    print("\nPAGE RANK")
-    data = {}
-    for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
-        data[row[0]] = row[1]
-    pprint.pprint(data)
-    # NOTE. for some reason #s 13 and 16 are converted to binary before being stored into
-    # the SQL database (for page_rank table) and I don't know why...
-    # RESOLVED. explicitly type cast doc_id to int() before storing to database
+# print("\nPAGE RANK")
+# data = {}
+# for row in db_conn.cursor().execute("SELECT * FROM page_rank"):
+#     data[row[0]] = row[1]
+# pprint.pprint(data)
 
-    # Delete tables from database
-    db_conn.cursor().execute("DROP TABLE lexicon")
-    db_conn.cursor().execute("DROP TABLE document_idx")
-    db_conn.cursor().execute("DROP TABLE inverted_idx")
-    db_conn.cursor().execute("DROP TABLE page_rank")
-    db_conn.cursor().execute("DROP TABLE resolved_inverted_index")
+# print("\nMAPPING")
+# data = []
+# for row in db_conn.cursor().execute("SELECT * FROM resolved_inverted_index"):
+#     data.append(row)
+# pprint.pprint(data)
 
-    db_conn.commit()
-    db_conn.close()
+# NOTE. for some reason #s 13 and 16 are converted to binary before being stored into
+# the SQL database (for page_rank table) and I don't know why...
+# RESOLVED. explicitly type cast doc_id to int() before storing to database
 
-    print('\nLinks\n')
-    print(bot.links)
+
+
+
+# Delete tables from database
+# db_conn.cursor().execute("DROP TABLE lexicon")
+# db_conn.cursor().execute("DROP TABLE document_idx")
+# db_conn.cursor().execute("DROP TABLE inverted_idx")
+# db_conn.cursor().execute("DROP TABLE page_rank")
+# db_conn.cursor().execute("DROP TABLE resolved_inverted_index")
+
+# db_conn.commit()
+db_conn.close()
+
+# print('\nLinks\n')
+# print(bot.links)

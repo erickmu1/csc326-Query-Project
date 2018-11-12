@@ -1,6 +1,6 @@
 from bottle import run, route, request, template, static_file, redirect, default_app, error, url
 from collections import Counter
-from dict2xml import dict2xml as xmlify
+from database_access import find_urls
 import json
 import httplib2
 import urllib
@@ -138,16 +138,14 @@ def display_keywords():
 
             # getting first word of user's input 
             searched_word = keywords_original_list[0]
+            total_url_list = find_urls(db_conn, searched_word)
 
 
+            # Check if file exists. If not, create a new one
+            with open('json/url_results.json', 'w') as outfile:
+                json.dump(total_url_list, outfile)
 
 
-            # if user_session is not None:
-            #     total_list += keywords_list
-
-        # take the top 20 most popular words
-        # if user_session is not None:
-        #     popular_list = total_list.most_common(num_words)
 
     return template('webpages/home_page', user_input=user_input, current_page_urls=current_page_urls, 
                     total_url_list=total_url_list, start_site=False, user=user_session)
@@ -236,18 +234,17 @@ def send_css(filename):
 def send_javscript(filename):
     return static_file(filename, root='js')
 
+# Static txt files
+@route('/json/<filename:re:.*\.json>')
+def send_txt(filename):
+    return static_file(filename, root="json")
+
 # Static jpg files
 @route('/images/<filename:re:.*\.jpg>')
 def send_img(filename):
     return static_file(filename, root="images")
 
     
-# Static txt files
-@route('/js/<filename:re:.*\.txt>')
-def send_txt(filename):
-    return static_file(filename, root="js")
-
-
 run(app, host='localhost', port=8080, debug=True)
 
 

@@ -6,8 +6,10 @@
         <link rel="stylesheet" href="../style/brand.css">
         <link rel="stylesheet" href="../style/search-bar.css">
         <link rel="stylesheet" href="../style/table.css">
+        <link rel="stylesheet" href="../style/buttons.css">
 
-        <script type="text/javascript" src="../js/test.js"></script>
+        <script type="text/javascript" src="../js/display_urls.js"></script>
+        <script type="text/javascript" src="../js/require.js"></script>
 
         <title>Ace Search Systems</title>
 
@@ -34,8 +36,6 @@
         </style>
     </head>
     <body>
-
-        <!-- Leave empty for now -->
         <header>
             <!-- Sign In Button -->
             <div class="right">
@@ -57,7 +57,6 @@
 
 
         </header>
-        <button onclick="loadDoc()">Press me</button>
         <!-- Brand name and logo -->
         <section class = "search_brand">
                 <p class = "brand_name"> Ace Search Systems </p>
@@ -69,14 +68,10 @@
        
             <form action="/" method="post">
                 <input class = "search_input" name="keywords" type="text" placeholder="Type to search"/>
-                <input class = "search_button" value="Go!" type="submit" />
+                <input onclick="loadDoc()" class = "search_button" value="Go!" type="submit" />
             </form> 
 
         </div>
-
-        
-        <div id = "id01"></div>
-
 
         <!-- Display what user inputted -->
         <section class = "user_input">
@@ -91,20 +86,19 @@
         </section>
 
         <!-- Table of results and result history -->
-        %if user is not None:
-            <div class="table_format">
-                <table id="results" class = "results_format">
-                    <tr class = "table_header">
-                        <td class = "no_border"><b>Searched Word</b></td>
-                        <td><b>Count</b></td>
-                    </tr>
-            </div>
-        %end
+        <!-- %if user is not None: -->
+        <div class="table_format">
+            <table id="results" class="results_format">
+        </div>
+        <!-- %end -->
         
+        <div id="page_buttons">
+
+        </div>
+
+
         <script type = "text/javascript">
-            // function myFunction() {
-            //     alert("this is an alert");
-            // }
+            loadDoc();
         </script>
 
     </body>

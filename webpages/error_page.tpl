@@ -60,7 +60,7 @@
         <!-- Display what user inputted -->
         <section class = "user_input">
             <p class = "user_input">
-                Could not find what you were looking for lol. 
+                Could not find what you were looking for. 
                 <br>  <a class = "links" href = "{{home_url}}">Click here </a> to go back to main page.
             </p>
 
