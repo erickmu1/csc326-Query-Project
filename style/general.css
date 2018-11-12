@@ -1,6 +1,5 @@
 /* NOTE:
 If values are never being updated on the webpage, it's because of the caching of the website
-
 Fix: shift + f5 (windows)
 */
 
@@ -19,7 +18,27 @@ header{
     margin-top: 5%;
 }
 
-a.links{
+.links{
     color: white;
+}
+
+.right {
+    float: right;
+    width: 100px;
+    padding: 10px;
+}
+.left {
+    float: left;
+    width: 100px;
+    padding: 10px;
+}
+p.email{
+    font-family: Rockwell, sans-serif;
+    color: white;
+    font-size: 1.0em;
+    text-align: left;
+
+    padding:0;
+    margin:0;
 }
 

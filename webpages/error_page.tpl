@@ -2,7 +2,9 @@
 <html>
     <head>
         <!-- Retrieving CSS files -->
-        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="../style/general.css">
+        <link rel="stylesheet" href="../style/brand.css">
+        <link rel="stylesheet" href="../style/search-bar.css">
 
         <title>Ace Search Systems</title>
         <style>
@@ -60,7 +62,7 @@
         <!-- Display what user inputted -->
         <section class = "user_input">
             <p class = "user_input">
-                Could not find what you were looking for lol. 
+                Could not find what you were looking for. 
                 <br>  <a class = "links" href = "{{home_url}}">Click here </a> to go back to main page.
             </p>
 

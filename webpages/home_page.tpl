@@ -5,37 +5,14 @@
         <link rel="stylesheet" href="../style/general.css">
         <link rel="stylesheet" href="../style/brand.css">
         <link rel="stylesheet" href="../style/search-bar.css">
-        <link rel="stylesheet" href="../style/table.css">
+        <link rel="stylesheet" href="../style/search-results.css">
 
-        <script type="text/javascript" src="../js/test.js"></script>
+        <script type="text/javascript" src="../js/display_urls.js"></script>
 
         <title>Ace Search Systems</title>
 
-        <style>
-        .right {
-            float: right;
-            width: 100px;
-            padding: 10px;
-        }
-        .left {
-            float: left;
-            width: 100px;
-            padding: 10px;
-        }
-        p.email{
-            font-family: Rockwell, sans-serif;
-            color: white;
-            font-size: 1.0em;
-            text-align: left;
-
-            padding:0;
-            margin:0;
-        }
-        </style>
     </head>
     <body>
-
-        <!-- Leave empty for now -->
         <header>
             <!-- Sign In Button -->
             <div class="right">
@@ -57,11 +34,10 @@
 
 
         </header>
-        <button onclick="myFunction()">Press me</button>
         <!-- Brand name and logo -->
         <section class = "search_brand">
-                <p class = "brand_name"> Ace Search Systems </p>
-                <img class = "logo" src = "../images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
+            <p class = "brand_name"> Ace Search Systems </p>
+            <img class = "logo" src = "../images/ace-logo.jpg"  Alt="Ace Search Systems Logo"> 
         </section>
 
         <!-- Search bar -->
@@ -69,11 +45,10 @@
        
             <form action="/" method="post">
                 <input class = "search_input" name="keywords" type="text" placeholder="Type to search"/>
-                <input class = "search_button" value="Go!" type="submit" />
+                <input onclick="loadDoc()" class = "search_button" value="Go!" type="submit" />
             </form> 
 
         </div>
-
 
         <!-- Display what user inputted -->
         <section class = "user_input">
@@ -82,27 +57,34 @@
 
             %elif user_input != None:
                 <p class = "user_input">Searched for: "{{user_input}}"</p>
+                %if no_url_found == True:
+                    <p class = "user_input">No results found</p>
+                %end
 
             %end
 
         </section>
 
-        <!-- Table of results and result history -->
-        %if user is not None:
+        <section class="search_results">
+            <!-- Table of results and result history -->
+            <!-- %if user is not None: -->
+            <div id="table_header"></div>
+
             <div class="table_format">
-                <table id="results" class = "results_format">
-                    <tr class = "table_header">
-                        <td class = "no_border"><b>Searched Word</b></td>
-                        <td><b>Count</b></td>
-                    </tr>
+                <table id="results" class="results_format">
+                </table>
             </div>
+            <!-- %end -->
+            
+            <div id="page_buttons"></div>
+        </section>
+
+
+        %if no_url_found == False:
+            <script type = "text/javascript">
+                loadDoc();
+            </script>
         %end
-        
-        <script type = "text/javascript">
-            // function myFunction() {
-            //     alert("this is an alert");
-            // }
-        </script>
 
     </body>
 
