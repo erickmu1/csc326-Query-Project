@@ -507,13 +507,13 @@ if __name__ == "__main__":
     # RESOLVED. explicitly type cast doc_id to int() before storing to database
 
     # Delete tables from database
-    db_conn.cursor().execute("DROP TABLE lexicon")
-    db_conn.cursor().execute("DROP TABLE page_content")
-    db_conn.cursor().execute("DROP TABLE document")
-    db_conn.cursor().execute("DROP TABLE resolved_map")
+    # db_conn.cursor().execute("DROP TABLE lexicon")
+    # db_conn.cursor().execute("DROP TABLE page_content")
+    # db_conn.cursor().execute("DROP TABLE document")
+    # db_conn.cursor().execute("DROP TABLE resolved_map")
 
-    db_conn.commit()
+    # db_conn.commit()
     db_conn.close()
 
-    print('\nLinks\n')
-    print(bot.links)
+    # print('\nLinks\n')
+    # print(bot.links)

@@ -9,11 +9,11 @@ ec2 = boto3.resource('ec2')
 # outfile.write(KeyPairOut)
 
 
-# create an instance with security group 'csc326-group39'
+# create an UBUNTU instance with security group 'csc326-group39'
 instances = ec2.create_instances(
      ImageId='ami-0ac019f4fcb7cb7e6',
      MinCount=1,
-     MaxCount=2,
+     MaxCount=1,
      InstanceType='t2.micro',
      KeyName='ec2-keypair',
      SecurityGroupIds=[

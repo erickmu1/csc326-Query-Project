@@ -8,16 +8,19 @@ LAB 1
 - test cases for the crawler can be found in the urls folder
 
 LAB 2
-- public IP address: 52.44.172.143
+- public IP address: 18.211.236.148
 - benchmark setup: 
     - have apache installed
     - have dstat installed
     - run: ab -n 150 -c 50 http://52.44.172.143:80/?keywords=helloworld+foo+bar
+    - run: dstat (on another computer)
 
 LAB 3
-- To run website: run "crawler.py". Then run "main_page.py" and go to http://localhost:8080/"
-- BONUSs JavaScript and AJAX for dynamic changing of links (Completed)
+Frontend:
+- To run website: run "multicrawler.py". Then run "main_page.py" and go to http://18.211.236.148
+- BONUS: JavaScript and AJAX for dynamic changing of links (Completed)
 
+Backend:
 - To run backend to demonstrate required functionality run "run_backend_test.py"
 - The following information can be found in the following tables"
     - lexicon in **lexicon** table
@@ -29,3 +32,8 @@ LAB 3
     - Performance results:
     - given urls: https://www.google.ca/, http://www.eecg.utoronto.ca/, https://www.facebook.com/ & depth: 1
     - execution times are Single: 34.754450423 s & Multi: 9.073222797999996 s
+
+Benchmark Discussion:
+It was very apparent that the time per request between the functionality of the two websites for lab 2 and 3 were different. Lab 2 involved creating a new data structure and adding onto it as the user inserted more inputs to search. Lab 3, however, used its crawler to identify and store the URL links before the webpage is run, and remains unchanged throughout the duration of the webpage, until crawler is ran again. From there on, the website looks to its cache to return the designated URLs instead of creating and storing data in data structures, which takes a lot of time and memory should there be countles inputs. 
+
+See more details inside the RESULT.txt

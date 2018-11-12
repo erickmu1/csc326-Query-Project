@@ -1,0 +1,48 @@
+LAB 2 RESULTS:
+Average response time/latency per request: 
+    - Time per request:       1389.549 [ms] (mean)
+    - Time per request:       27.791 [ms] (mean, across all concurrent requests)
+
+LAB 3 RESULTS:
+Average response time/latency per request: 
+    - Time per request:       8.512 [ms] (mean)
+    - Time per request:       0.085 [ms] (mean, across all concurrent requests)
+
+LAB 2 RESULTS:
+99 percentile of response time/latency per request: 3333 (ms)
+Utilization of CPU, memory, disk IO, and network when max performance is sustained: 
+    - CPU: 
+        - usr: 60
+        - sys: 8
+        - idl: 32
+    - Memory: 
+        - used: 131M
+        - free: 164M
+        - buff: 50.7M 
+        - cach: 586M
+    - Disk I/O:
+        - read: 0
+        - write: 2.00
+    - Network:
+        - recv: 173k
+        - send: 1087k
+
+LAB 3 RESULTS:
+99 percentile of response time/latency per request: 1057 (ms)
+Utilization of CPU, memory, disk IO, and network when max performance is sustained: 
+    - CPU: 
+        - usr: 84
+        - sys: 7
+        - idl: 7
+    - Memory: 
+        - used: 131M
+        - free: 164M
+        - buff: 50.7M 
+        - cach: 586M
+    - Disk I/O:
+        - read: 0
+        - write: 0
+    - Network:
+        - recv: 832k
+        - send: 1066k
+
