@@ -18,6 +18,7 @@ LAB 3
 - To run website: run "crawler.py". Then run "main_page.py" and go to http://localhost:8080/"
 - BONUSs JavaScript and AJAX for dynamic changing of links (Completed)
 
+- To populate database "dbFile.db" run either crawler.py or multicrawler.py (multi-threaded crawler)
 - To run backend to demonstrate required functionality run "run_backend_test.py"
 - The following information can be found in the following tables"
     - lexicon in **lexicon** table
