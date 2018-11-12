@@ -71,6 +71,7 @@ class crawler(object):
         crsr.execute("CREATE TABLE document_idx (doc_id INTEGER, word_id INTEGER)")
         crsr.execute("CREATE TABLE inverted_idx (word_id INTEGER, doc_id INTEGER)")
         crsr.execute("CREATE TABLE page_rank (doc_id INTEGER, rank_score REAL)")
+        crsr.execute("CREATE TABLE resolved_inverted_index (word TEXT, url TEXT, rank_score REAL)")
 
         # Save changes to db
         db_conn.commit()
@@ -396,14 +397,33 @@ class crawler(object):
                 if socket:
                     socket.close()
 
-        # Calculate pagerank
-        self.pagerank = page_rank(self.links)
+        if self.links is not None:
+            # Calculate pagerank
+            self.pagerank = page_rank(self.links)
 
-        # Add page_rank scores to db
-        rank = []
-        for doc_id in self.pagerank:
-            rank.append((int(doc_id), self.pagerank[doc_id]))
-        self._db_conn.cursor().executemany("INSERT INTO page_rank VALUES (?, ?)", rank)
+            # Add page_rank scores to db
+            rank = []
+            for doc_id in self.pagerank:
+                rank.append((int(doc_id), self.pagerank[doc_id]))
+            self._db_conn.cursor().executemany("INSERT INTO page_rank VALUES (?, ?)", rank)
+
+            # STORE Resolved Inverted Index
+            resolved_map = []
+
+            for word in self._res_inv_idx_cache:
+                for url in self._res_inv_idx_cache[word]:
+
+                    doc_id = self._doc_id_cache[url]
+
+                    # Insert URL with page_rank score
+                    if doc_id in self.pagerank:
+                        resolved_map.append((word, url, self.pagerank[doc_id]))
+                    # NOTE. there are some urls that don't have any links to them.
+                    # These will be given a default score of "0" because they aren't sent to page_rank()
+                    else:
+                        resolved_map.append((word, url, 0.0))
+
+            self._db_conn.cursor().executemany("INSERT INTO resolved_inverted_index VALUES (?, ?, ?)", resolved_map)
 
         # Save changes to database
         self._db_conn.commit()
@@ -461,6 +481,7 @@ if __name__ == "__main__":
     db_conn.cursor().execute("DROP TABLE document_idx")
     db_conn.cursor().execute("DROP TABLE inverted_idx")
     db_conn.cursor().execute("DROP TABLE page_rank")
+    db_conn.cursor().execute("DROP TABLE resolved_inverted_index")
 
     db_conn.commit()
     db_conn.close()
