@@ -57,7 +57,7 @@
 
 
         </header>
-        <button onclick="myFunction()">Press me</button>
+        <button onclick="loadDoc()">Press me</button>
         <!-- Brand name and logo -->
         <section class = "search_brand">
                 <p class = "brand_name"> Ace Search Systems </p>
@@ -73,6 +73,9 @@
             </form> 
 
         </div>
+
+        
+        <div id = "id01"></div>
 
 
         <!-- Display what user inputted -->

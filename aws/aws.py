@@ -3,7 +3,7 @@ ec2 = boto3.resource('ec2')
 
 #code to create a new key pair
 # outfile = open('ec2-keypair.pem','w')
-# key = ec2.create_key_pair(KeyName = 'aws-keypair')
+# key = ec2.create_key_pair(KeyName = 'ec2-keypair')
 
 # KeyPairOut = str(key.key_material)
 # outfile.write(KeyPairOut)
@@ -15,7 +15,7 @@ instances = ec2.create_instances(
      MinCount=1,
      MaxCount=2,
      InstanceType='t2.micro',
-     KeyName='aws-keypair',
+     KeyName='ec2-keypair',
      SecurityGroupIds=[
             'sg-0d0466ff829eda700',
     ]

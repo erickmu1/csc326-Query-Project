@@ -1,5 +1,6 @@
 from bottle import run, route, request, template, static_file, redirect, default_app, error, url
 from collections import Counter
+from dict2xml import dict2xml as xmlify
 import json
 import httplib2
 import urllib
@@ -226,7 +227,6 @@ def send_css(filename):
 # Static JavaScript Files
 @route('/js/<filename:re:.*\.js>')
 def send_javscript(filename):
-    print("filename: " + filename)
     return static_file(filename, root='js')
 
 # Static jpg files
@@ -234,6 +234,11 @@ def send_javscript(filename):
 def send_img(filename):
     return static_file(filename, root="images")
 
+    
+# Static txt files
+@route('/js/<filename:re:.*\.txt>')
+def send_txt(filename):
+    return static_file(filename, root="js")
 
 
 run(app, host='localhost', port=8080, debug=True)
