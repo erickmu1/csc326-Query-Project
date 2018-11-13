@@ -1,0 +1,2 @@
+IP address: 18.211.236.48
+DNS address: ec2-18-211-236-148.compute-1.amazonaws.com
