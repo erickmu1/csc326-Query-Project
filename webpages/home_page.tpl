@@ -6,8 +6,10 @@
         <link rel="stylesheet" href="../style/brand.css">
         <link rel="stylesheet" href="../style/search-bar.css">
         <link rel="stylesheet" href="../style/search-results.css">
+        <link rel="stylesheet" href="../style/search_button.scss">
 
         <script type="text/javascript" src="../js/display_urls.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
         <title>Ace Search Systems</title>
 

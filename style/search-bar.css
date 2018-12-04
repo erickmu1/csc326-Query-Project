@@ -17,18 +17,19 @@ form{
     filter: drop-shadow(3px 3px 3px #000000);
 }
 
-
 input {
     border: 1px dotted #999;
     margin: 10px;
     box-sizing: border-box;
 }
-
 input.search_input{
     width: 20em;
 }
 
-section.user_input{
+
+/************* USER INPUT SECTION ************/
+section.user_input
+{
     height: 8%;
     margin: 1em auto;
 
@@ -39,7 +40,8 @@ section.user_input{
 
 }
 
-p.user_input{
+p.user_input
+{
     font-family: Rockwell, sans-serif;
     color: white;
     font-size: 1.4em;
@@ -48,4 +50,3 @@ p.user_input{
     padding:0; 
     margin:0;
 }
-

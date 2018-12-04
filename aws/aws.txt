@@ -1,0 +1,81 @@
+HOW TO RUN AWS:
+
+Create an instance using aws.py (make sure the code to run an instance is uncommented).
+
+(Might go to /c/Users/User/.ssh/known_hosts, open known_hosts with vim and use 'dd' on every line with amazon aws on it)
+
+To SSH into the instance, run:
+"ssh -i <path to .pem key> ubuntu@<Public IP address>" (which is 18.211.236.148)
+
+ssh -i DO_NOT_COMMIT/ec2-keypair.pem ubuntu@18.211.236.148
+
+It's ubuntu because the aws machine i'm using is ubuntu
+
+Inside the machine, to run benchmarking run:
+"sudo apt-get update"
+"sudo apt-get install apache2-utils" -> Y
+"sudo apt-get install sysstat dstat" -> Y
+
+To transfer files into machine, run:
+"scp -i DO_NOT_COMMIT/ec2-keypair.pem -r images/ ubuntu@18.211.236.148:~/"
+The first -i is read the .pem file to get permission, the -r is for files and folders.
+
+
+scp -i DO_NOT_COMMIT/ec2-keypair.pem -r js -r json -r images -r style -r urls -r webpages -r main_page.py -r multicrawler.py -r pagerank.py -r performance_test.py -r database_access.py -r crawler.py -r dbFile.db ubuntu@18.211.236.148:~/
+NOTE: for installing packages, they stay in the instance until you get rid of the instance
+
+
+// If an install ever gets halted
+ps aux | grep apt
+sudo kill processnumber
+sudo kill -9 processnumber
+
+
+To switch to python3 as a default:
+alias python=python3
+
+To install Bottle:
+sudo apt-get install python-bottle
+
+To install pip:
+sudo apt-get install python-pip python-dev build-essential -> Y
+sudo pip install --upgrade pip 
+sudo pip install --upgrade virtualenv 
+
+To install oauth2client:
+sudo -H pip install --upgrade oauth2client
+
+To install googleclient:
+sudo -H pip install --upgrade google-api-python-client
+
+To install beaker:
+sudo -H pip install beaker
+
+To install request:
+sudo -H pip install requests
+
+To install beautiful soup:
+sudo apt-get install python3-bs4 -> Y
+
+To install numpy:
+sudo apt-get install python-numpy -> Y
+sudo -H pip install --upgrade numpy
+
+To run multicrawler.py, run:
+python3 multicrawler.py
+
+To run main_page.py, need to change two things in same file:
+Go to bottom of file and change
+- host -> '0.0.0.0'
+- port -> 80
+
+(Use 'a' for appending characters in vim)
+
+Then run:
+sudo python main_page.py
+
+To get to the page, don't click on the given link. Instead, type this in:
+http://18.211.236.148
+
+To run apache, run:   
+ab -r -n 2000 -c 150 http://18.211.236.148/?keywords=helloworld+foo+bar

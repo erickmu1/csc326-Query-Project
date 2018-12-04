@@ -1,9 +1,11 @@
 from bottle import run, route, request, template, static_file, redirect, default_app, error, url
 from collections import Counter
 from database_access import find_urls
+from search import spell_check
 import json
 import httplib2
 import urllib
+import csv
 
 # Libraries for Google Login
 from oauth2client.client import OAuth2WebServerFlow
@@ -131,7 +133,12 @@ def display_keywords():
 
             # getting first word of user's input 
             searched_word = keywords_original_list[0]
+            # searched_word = spell_check(keywords_original_list[0], db_conn)
+
+            # print (search_word)
+
             total_url_list = find_urls(db_conn, searched_word)
+
 
 
             if not total_url_list:
@@ -142,9 +149,6 @@ def display_keywords():
                     json.dump(total_url_list, outfile)
                 no_url_found = False
                 
-            
-
-
 
     return template('webpages/home_page', user_input=user_input, no_url_found=no_url_found,
                     total_url_list=total_url_list, start_site=False, user=user_session)
@@ -228,6 +232,11 @@ def error_handler_404(error):
 def send_css(filename):
     return static_file(filename, root='style')
 
+# Static SCSS Files
+@route('/style/<filename:re:.*\.scss>')
+def send_scss(filename):
+    return static_file(filename, root='style')
+
 # Static JavaScript Files
 @route('/js/<filename:re:.*\.js>')
 def send_javscript(filename):
@@ -243,7 +252,19 @@ def send_txt(filename):
 def send_img(filename):
     return static_file(filename, root="images")
 
-    
-run(app, host='localhost', port=8080, debug=True)
+
+with open('current_instances.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    next(csv_reader)
+    row = next(csv_reader)
+    instance_id = row[0]
+    instance_ip = row[1]
+
+    print "\nINSTANCE ID:", instance_id
+    print "IP ADDRESS:", instance_ip, "\n" 
+
+
+run(app, host='0.0.0.0', port=80, debug=True)
+
 
 
